@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  rest-api:
+    container_name: rest-api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    build:
+        context: ./ 
+
+  survey:
+    image: survey/survey:2.2.1-alpine
+    container_name: survey-service
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+    - $PWD/Surveyfile:/etc/survey/Surveyfile
+    - $PWD/site:/srv
+    - survey_data:/data
+    - survey_config:/config
+
+volumes:
+  survey_data:
+  survey_config:
