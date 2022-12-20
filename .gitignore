@@ -10,3 +10,7 @@ node_modules
 
 # build
 build
+
+# frontend
+simple-survey/node_modules
+simple-survey/dist
