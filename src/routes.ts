@@ -137,7 +137,7 @@ function routes(app: Express) {
    *  post:
    *     tags:
    *     - Survey
-   *     summary: Create a new survey
+   *     summary: Create a survey
    *     requestBody:
    *      required: true
    *      content:

@@ -3,17 +3,17 @@ import { object, number, string, TypeOf } from "zod";
 /**
  * @openapi
  * components:
- *   schema:
- *     Survey:
- *       type: object
- *       required:
- *        - title
- *        - content
- *       properties:
- *         title:
- *           type: string
- *         content:
- *           type: string
+ *    schema:
+ *      Survey:
+ *        type: object
+ *        required:
+ *          - title
+ *          - content
+ *        properties:
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
  */
 
 const payload = {
