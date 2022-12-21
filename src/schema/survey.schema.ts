@@ -14,6 +14,42 @@ import { object, number, string, TypeOf } from "zod";
  *            type: string
  *          content:
  *            type: string
+ *      CreateSurveyInput:
+ *        type: object
+ *        required:
+ *          - title
+ *          - content
+ *        properties:
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
+ *      CreateSurveyResponse:
+ *        type: object
+ *        properties:
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
+ *          _id:
+ *            type: string
+ *          createdAt:
+ *            type: string
+ *          updatedAt:
+ *            type: string
+ *      UpdateSurveyInput:
+ *        type: object
+ *        required:
+ *          - surveyId
+ *          - title
+ *          - content
+ *        properties:
+ *          surveyId:
+ *            type: string
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
  */
 
 const payload = {

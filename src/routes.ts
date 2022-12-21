@@ -60,14 +60,14 @@ function routes(app: Express) {
    *      content:
    *        application/json:
    *           schema:
-   *              $ref: '#/components/schemas/CreateUserInput'
+   *              $ref: '#/components/schema/CreateUserInput'
    *     responses:
    *      200:
    *        description: Success
    *        content:
    *          application/json:
    *            schema:
-   *              $ref: '#/components/schemas/CreateUserResponse'
+   *              $ref: '#/components/schema/CreateUserResponse'
    *      409:
    *        description: Conflict
    *      400:
@@ -143,14 +143,14 @@ function routes(app: Express) {
    *      content:
    *        application/json:
    *           schema:
-   *              $ref: '#/components/schemas/CreateSurveyInput'
+   *              $ref: '#/components/schema/CreateSurveyInput'
    *     responses:
    *      200:
    *        description: Success
    *        content:
    *          application/json:
    *            schema:
-   *              $ref: '#/components/schemas/CreateSurveyResponse'
+   *              $ref: '#/components/schema/CreateSurveyResponse'
    *      409:
    *        description: Conflict
    *      400:
@@ -172,7 +172,7 @@ function routes(app: Express) {
    *     parameters:
    *      - name: surveyId
    *        in: path
-   *        description: The id of the product
+   *        description: The id of the survey
    *        required: true
    *     responses:
    *       200:
@@ -190,14 +190,14 @@ function routes(app: Express) {
    *     parameters:
    *      - name: surveyId
    *        in: path
-   *        description: The id of the product
+   *        description: The id of the survey
    *        required: true
    *     requestBody:
    *      required: true
    *      content:
    *       application/json:
    *        schema:
-   *           $ref: '#/components/schemas/UpdateSurveyInput'
+   *           $ref: '#/components/schema/UpdateSurveyInput'
    *     responses:
    *       200:
    *         description: Success
