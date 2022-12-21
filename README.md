@@ -27,12 +27,12 @@ jwt malformed: before request, you should have a jwt, which means you should cre
 * Express.js & Express.js middleware
 * Zod validation
 
-## Data flow
-![](./diagrams/data-flow.png)
+## Architecture
+![](./diagrams/Architecture.drawio.png)
 
 
-## Access & refresh token flow
-![](./diagrams/refresh-token-flow.png)
+## Survey Simsple Overview
+![](./diagrams/simpleSurvey.drawio.png)
 
 
 # Deployment
