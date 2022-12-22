@@ -56,7 +56,7 @@ const payload = {
   body: object({
     title: string({
       required_error: "survey title is required",
-    }).min(120, "Title should be at most 120 characters long"),
+    }).max(120, "Title should be at most 120 characters long"),
     content: string({
       required_error: "survey content is required",
     }),

@@ -210,7 +210,7 @@ function routes(app: Express) {
    */
   app.put(
     "/api/surveys/:surveyId",
-    [requireUser, validateResource(updateProductSchema)],
+    [requireUser, validateResource(updateSurveySchema)],
     updateSurveyHandler
   );
 
