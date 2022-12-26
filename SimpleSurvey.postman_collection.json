@@ -195,14 +195,14 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"productId\", jsonData.productId);",
+									"postman.setEnvironmentVariable(\"surveyId\", jsonData.surveyId);",
 									"",
 									"",
 									"const newAccessToken = responseHeaders['x-access-token']",
 									"",
 									"if(newAccessToken){",
 									"    console.log('Set new access token')",
-									"postman.setEnvironmentVariable(\"accessToken\", newAccessToken);",
+									"    postman.setEnvironmentVariable(\"accessToken\", newAccessToken);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -230,7 +230,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Canon EOS 1500D DSLR Camera with 18-55mm Lens\",\n    \"description\": \"Designed for first-time DSLR owners who want impressive results straight out of the box, capture those magic moments no matter your level with the EOS 1500D. With easy to use automatic shooting modes, large 24.1 MP sensor, Canon Camera Connect app integration and built-in feature guide, EOS 1500D is always ready to go.\",\n    \"price\": 879.99,\n    \"image\": \"https://i.imgur.com/QlRphfQ.jpg\"\n}",
+							"raw": "{\n    \"title\": \"Survey 1\",\n    \"content\": \"{\\\"logoPosition\\\":\\\"right\\\",\\\"pages\\\":[{\\\"name\\\":\\\"page1\\\",\\\"elements\\\":[{\\\"type\\\":\\\"text\\\",\\\"name\\\":\\\"question1\\\"}]}]}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,13 +238,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/api/products",
+							"raw": "{{endpoint}}/api/surveys",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"api",
-								"products"
+								"surveys"
 							]
 						}
 					},
@@ -263,30 +263,18 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"title\": \"A post title\",\n    \"body\": \"Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{endpoint}}/api/products/{{productId}}",
+							"raw": "{{endpoint}}/api/surveys/{{surveyId}}",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"api",
-								"products",
-								"{{productId}}"
+								"surveys",
+								"{{surveyId}}"
 							]
 						}
 					},
@@ -331,7 +319,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Canon EOS 1500D DSLR Camera with 18-55mm Lens\",\n    \"description\": \"Designed for first-time DSLR owners who want impressive results straight out of the box, capture those magic moments no matter your level with the EOS 1500D. With easy to use automatic shooting modes, large 24.1 MP sensor, Canon Camera Connect app integration and built-in feature guide, EOS 1500D is always ready to go.\",\n    \"price\": 699.99,\n    \"image\": \"https://i.imgur.com/QlRphfQ.jpg\"\n}",
+							"raw": "{\n    \"title\": \"Survey 1\",\n    \"content\": \"{\\\"logoPosition\\\":\\\"right\\\",\\\"pages\\\":[{\\\"name\\\":\\\"survey\\\",\\\"elements\\\":[{\\\"type\\\":\\\"text\\\",\\\"name\\\":\\\"question1\\\"}]}]}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -339,14 +327,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{endpoint}}/api/products/{{productId}}",
+							"raw": "{{endpoint}}/api/surveys/{{surveyId}}",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"api",
-								"products",
-								"{{productId}}"
+								"surveys",
+								"{{surveyId}}"
 							]
 						}
 					},
@@ -389,24 +377,15 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"title\": \"A post title\",\n    \"body\": \"Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text Some HTML text\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{endpoint}}/api/products/{{productId}}",
+							"raw": "{{endpoint}}/api/surveys/{{surveyId}}",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"api",
-								"products",
-								"{{productId}}"
+								"surveys",
+								"{{surveyId}}"
 							]
 						}
 					},
@@ -497,6 +476,11 @@
 		{
 			"key": "productId",
 			"value": "<productId will be set when you create a session>"
+		},
+		{
+			"key": "surveyId",
+			"value": "<productId will be set when you create a session>",
+			"type": "string"
 		}
 	]
 }
