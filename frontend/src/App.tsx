@@ -4,31 +4,21 @@ import { StylesManager, Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import './App.css'
 import 'survey-core/defaultV2.min.css';
-
+import CustomCreator from "./components/CustomCreator"
+import Dashboard from './pages/Dashboard';
+import SideBar from './components/Sidebar'
 
 StylesManager.applyTheme("defaultV2");
 
-const surveyJson = {
-  elements: [{
-    name: "FirstName",
-    title: "Enter your first name:",
-    type: "text"
-  }, {
-    name: "LastName",
-    title: "Enter your last name:",
-    type: "text"
-  }]
+
+
+const App = () => {
+  return (
+    // <SideBar/>
+    <CustomCreator />
+    // <Dashboard />
+  );
 };
 
-function App() {
-  // const [count, setCount] = useState(0)
-  const survey = new Model(surveyJson);
-
-  return (
-    <div className="App">
-      <Survey model={survey} />
-    </div>
-  )
-}
 
 export default App
