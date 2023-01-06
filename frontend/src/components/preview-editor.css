@@ -1,0 +1,24 @@
+.preview-editor-container {
+    width: 100%;
+    min-width: 400px;
+    height: 100%;
+    padding: 10px;
+}
+.preview-editor-images {
+    margin-top: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.preview-editor-card {
+    flex: 0 0 23%;
+    max-width: 23%;
+    /* max-height: 240px; */
+    margin-right: 2px;
+    
+}
