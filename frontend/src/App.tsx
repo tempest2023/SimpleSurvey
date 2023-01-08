@@ -5,6 +5,7 @@ import { Survey } from 'survey-react-ui';
 import './App.css'
 import 'survey-core/defaultV2.min.css';
 import Dashboard from './pages/Dashboard';
+import Classification from './components/Classification';
 
 StylesManager.applyTheme("defaultV2");
 
@@ -15,6 +16,8 @@ const App = () => {
     // <SideBar/>
     // <CustomCreator />
     <Dashboard />
+    // <UserDashboard />
+    // <Classification />
   );
 };
 

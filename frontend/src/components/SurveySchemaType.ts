@@ -1,3 +1,6 @@
+import { string } from "zod";
+import Classification from "./Classification";
+
 export type Card = {
     id: string;
     description: string;
@@ -9,8 +12,12 @@ export type Category = {
     title: string;
 }
 
+
 export type SurveyJsonSchema = {
     cardList: Array<Card>;
     categoryCount: number;
     categoryList: Array<Category>;
+    classification: {
+        [name: string]: Array<Card>; 
+    }
 }

@@ -6,6 +6,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import {nanoid} from "nanoid";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import "./formside.css";
@@ -39,15 +40,15 @@ const beforeUpload = (file: RcFile) => {
 const Form: React.FC<Props> = ({ updateParentState }) => {
   const [loading, setLoading] = useState(false);
 
-  const defaultCardList = [{ id: "1", description: "", cardImage: "" }];
+  const defaultCardList = [{ id: nanoid(7), description: "", cardImage: "" }];
 
-  const defaultCategoryList = [{ id: "1", title: "" }];
+  const defaultCategoryList = [{ id: nanoid(6), title: "" }];
 
   const [cards, setCards] = useState<Card[]>(defaultCardList);
   const [categories, setCategories] = useState<Category[]>(defaultCategoryList);
 
   const handleAddCard = () => {
-    const newCards = [...cards, { id: "", description: "", cardImage: "" }];
+    const newCards = [...cards, { id: nanoid(7), description: "", cardImage: "" }];
     setCards(newCards);
     updateParentState((prevState: SurveyJsonSchema) => ({
       ...prevState,
@@ -64,12 +65,11 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
     }));
   };
 
+
+
   //category
-
- 
-
   const handleAddCategory = () => {
-    const newCategory = [...categories, { id: "", title: "" }];
+    const newCategory = [...categories, { id: nanoid(6), title: "" }];
     setCategories(newCategory);
     updateParentState((prevState: SurveyJsonSchema) => ({
       ...prevState,
@@ -86,6 +86,7 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
     }));
   };
 
+
   const handleTitleChange = (idx: number) => (event) => {
     const updatedCategories = [...categories];
     updatedCategories[idx] = { ...categories[idx], title: event.target.value };
@@ -97,6 +98,7 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
   };
 
 
+
   const handleDescriptionChange = (idx: number) => (event) => {
     const updatedCards = [...cards];
     updatedCards[idx] = { ...cards[idx], description: event.target.value };
@@ -106,6 +108,8 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
       cardList: updatedCards,
     }));
   };
+
+
   const handleUploadChange =
     (idx: number) => (info: UploadChangeParam<UploadFile>) => {
       if (info.file.status === "uploading") {
@@ -127,7 +131,9 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
           }));
         });
       }
-    };
+};
+
+
 
   const uploadImageRequest = (options) => {
     const { onSuccess, onError, file, onProgress } = options;
@@ -148,7 +154,9 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
       </Button>
       {cards.map((card, idx) => (
         <div key={card.id}>
-          <label htmlFor={`description_${idx}`}>Description</label>
+            <p></p>
+          <label htmlFor={`description_${idx}`}>Card Title:</label>
+          <div className="form-group">
           <Input
             name={`description_${idx}`}
             type="text"
@@ -156,7 +164,9 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
             onChange={handleDescriptionChange(idx)}
           />
           <div className="form-upload-div" style={{ marginTop: 10 }}>
-            <Upload
+        </div>
+
+          <Upload
               name="cardImage"
               listType="picture-card"
               className="avatar-uploader"
@@ -169,12 +179,13 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
                 <img
                   src={card.cardImage}
                   alt="avatar"
-                  style={{ width: "100%", height: "100%" }}
+                  style={{ width: "100%", height: "100%"}}
                 />
               ) : (
                 uploadButton
               )}
             </Upload>
+
             <Button
               type="button"
               onClick={() => handleDeleteCard(idx)}
@@ -193,15 +204,18 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
       </Button>
       {categories.map((category, idx) => (
         <div key={category.id}>
-          <label htmlFor={`title_${idx}`}>Title</label>
+          <label htmlFor={`title_${idx}`}>Category：</label>
+          <br/>
+
           <Input
             name={`title_${idx}`}
             type="text"
             value={category.title}
             onChange={handleTitleChange(idx)}
           />
+
+
           <div className="form-upload-div" style={{ marginTop: 10 }}>
-           
             <Button
               type="button"
               onClick={() => handleDeleteCategory(idx)}
