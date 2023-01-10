@@ -22,6 +22,7 @@ const defaultFormData: SurveyJsonSchema = {
   cardList: [],
   categoryCount: 0,
   categoryList: [],
+  classification: {}
 };
 
 const Dashboard: React.FC = () => {
@@ -36,7 +37,7 @@ const Dashboard: React.FC = () => {
         <br />
         <br />
       </Header>
-
+    
       {preview && (
         <Layout>
           <Content>
@@ -48,6 +49,7 @@ const Dashboard: React.FC = () => {
       {!preview && (
         <Layout>
           <Sider style={{ backgroundColor: "#fff", padding: 10 }}>
+            
             <NewForm survey={formData} updateParentState={setFormData} />
           </Sider>
           <Layout>

@@ -3,7 +3,7 @@ import { Form, Input, Button, Upload } from "antd";
 import { useState, useCallback, useEffect} from "react";
 import { resolve } from "path";
 import { InputNumber } from "antd";
-import { SurveyJsonSchema, Card } from "./SurveySchemaType";
+import { SurveyJsonSchema, Card } from "./surveySchemaType";
 import "./formside.css";
 
 const ImageForm: React.FC = ({handleChange, onImageUpload}) => {
@@ -90,19 +90,17 @@ const FormSide: React.FC<FormSideProps> = (props) => {
     for (let i = 0; i < value; i++) {
       tmp.push({
         cardImage: '',
-        description: ''
+        description: '',
+        id: ""
       })
     }
+    
     // update to parent state
     updateParentFormData((prevState: SurveyJsonSchema) => ({
       ...prevState,
       cardCount: value,
     }));
   };
-
-  
-
-
 
   return (
     <Form

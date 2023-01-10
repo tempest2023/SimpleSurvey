@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Category, SurveyJsonSchema } from "./SurveySchemaType";
 import { message, Button, Upload, Input, Divider } from "antd";
 import {
@@ -10,6 +10,7 @@ import {nanoid} from "nanoid";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import "./formside.css";
+import Classification from "./Classification";
 
 
 type Props = {
@@ -39,13 +40,13 @@ const beforeUpload = (file: RcFile) => {
 
 const Form: React.FC<Props> = ({ updateParentState }) => {
   const [loading, setLoading] = useState(false);
-
+  
   const defaultCardList = [{ id: nanoid(7), description: "", cardImage: "" }];
 
   const defaultCategoryList = [{ id: nanoid(6), title: "" }];
-
-  const [cards, setCards] = useState<Card[]>(defaultCardList);
-  const [categories, setCategories] = useState<Category[]>(defaultCategoryList);
+  
+  const [cards, setCards] = useState<Card[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const handleAddCard = () => {
     const newCards = [...cards, { id: nanoid(7), description: "", cardImage: "" }];
@@ -66,16 +67,39 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
   };
 
 
-
+  
   //category
   const handleAddCategory = () => {
-    const newCategory = [...categories, { id: nanoid(6), title: "" }];
-    setCategories(newCategory);
-    updateParentState((prevState: SurveyJsonSchema) => ({
-      ...prevState,
-      categoryList: newCategory,
-    }));
-  };
+    const category = {id: nanoid(6), title: ""};
+    console.log('11111111111111' + category.id)
+    const newCategories = [...categories, category];
+    setCategories(newCategories);
+    updateParentState((prevState: SurveyJsonSchema) => {
+
+        const tmp = {...prevState.classification}
+      
+        // empty this list for classification[category.id]
+        
+        tmp[category.id] = [] as Array<Card>
+        console.log('[tmp]' + tmp)
+        return ({
+      
+          ...prevState,
+      
+          categoryList: newCategories,
+      
+          classification: tmp
+      
+        })
+      })
+    // updateParentState((prevState: SurveyJsonSchema) => ({
+    //     const tmp = {...prevState.classification};
+    //   ...prevState,
+    //   categoryList: newCategories,
+    // }));
+
+
+};
 
   const handleDeleteCategory = (idx: number) => {
     const newCategory = categories.filter((_, i) => i !== idx);
@@ -83,6 +107,7 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
     updateParentState((prevState: SurveyJsonSchema) => ({
       ...prevState,
       categoryList: newCategory,
+        
     }));
   };
 
@@ -120,7 +145,7 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
         // Get this url from response in real world.
         getBase64(info.file.originFileObj as RcFile, (url) => {
           setLoading(false);
-          console.log("[debug] base64 url: " + url);
+        //   console.log("[debug] base64 url: " + url);
           const updatedCards = [...cards];
           updatedCards[idx] = { ...cards[idx], cardImage: url as string };
           setCards(updatedCards);
@@ -146,7 +171,25 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+//   useEffect(() => {
+//     // console.log("[debug] preview-editor", formData);
+//     updateParentState((prevState: SurveyJsonSchema) => {
 
+//         const tmp = {...prevState.classification}
+      
+//         // empty this list for classification[category.id]
+        
+//         tmp[categories[0].id ] = [] as Array<Card>
+//         console.log('[tmp]' + tmp)
+//         return ({
+//           ...prevState,
+//           classification: tmp
+//         })
+//       })
+    
+//   }, []);
+  
+  
   return (
     <>
       <Button type="button" onClick={handleAddCard} icon={<PlusOutlined />}>
@@ -213,6 +256,7 @@ const Form: React.FC<Props> = ({ updateParentState }) => {
             value={category.title}
             onChange={handleTitleChange(idx)}
           />
+
 
 
           <div className="form-upload-div" style={{ marginTop: 10 }}>

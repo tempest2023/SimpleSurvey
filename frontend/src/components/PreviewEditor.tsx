@@ -51,8 +51,10 @@ const PreviewEditor = (props) => {
             ></Image>
           }
         >
+
           <Meta title={formData.cardList[i].description} />
           {/* {formData.categoryList} */}
+
         </Card>
       );
     }
@@ -83,17 +85,18 @@ const PreviewEditor = (props) => {
         )}
       </Carousel>
 
-      <div>
+     <div>
         <Button type="dashed" onClick={handlePrevClick}>
           Prev Card
         </Button>
+
         <Button type="dashed" onClick={handleNextClick}>
           Next Card
         </Button>
       </div>
       <br />
       <br />
-      <br />
+      <br /> 
      
       <div className="preview-editor-category">
         {categoryList.length > 0 && categoryList}

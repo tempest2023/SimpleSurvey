@@ -1,8 +1,17 @@
-import { Button, Card, Collapse, Dropdown, List, Menu, Spin, Carousel, Image} from "antd";
-import React, { useState, useRef, useEffect} from "react";
+import {
+  Button,
+  Card,
+  Collapse,
+  Dropdown,
+  List,
+  Menu,
+  Spin,
+  Carousel,
+  Image,
+} from "antd";
+import React, { useState, useRef, useEffect } from "react";
 import { SurveyJsonSchema } from "./SurveySchemaType";
 const { Meta } = Card;
-
 
 interface Card {
   id: string;
@@ -20,27 +29,12 @@ const Classification = (props) => {
 
   const categoryList = formData.categoryList;
   const [cardElementList, setCardElementList] = useState([]);
+  const [categoryElementList, setCategoryElementList] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [classification, setClassification] = useState<{
-    [name: string]: Card[];
-  }>({});
-
-  const moveCard = (card, fromCategoryId: string, toCategoryId: string) => {
-    setIsLoading(true);
-    // simulate an async operation
-    setTimeout(() => {
-      const updatedClassification = { ...classification };
-      const fromCategoryCards = classification[fromCategoryId];
-      const toCategoryCards = classification[toCategoryId];
-      updatedClassification[fromCategoryId] = fromCategoryCards.filter(
-        (c) => c.id !== card.id
-      );
-      updatedClassification[toCategoryId] = [...toCategoryCards, card];
-      setClassification(updatedClassification);
-      setIsLoading(false);
-    }, 1000);
-  };
+  //   const [classification, setClassification] = useState<{
+  //     [name: string]: Card[];
+  //   }>({});
 
   useEffect(() => {
     // console.log("[debug] preview-editor", formData);
@@ -67,64 +61,85 @@ const Classification = (props) => {
     setCardElementList(tmp);
   }, [formData]);
 
+  const handleDeleteCard = (category) => {
+    // const updatedClassification = {...classification };
+    console.log("cardList" + JSON.stringify(formData.cardList));
+    console.log(formData.cardList.length);
+    const card = formData.cardList[formData.cardList.length - 1];
+    console.log("card" + card);
 
-  
-  const menu = (card, categoryId: string) => (
-    <Menu>
-      {categoryList.map((c) => (
-        <Menu.Item key={c.id} onClick={() => moveCard(card, categoryId, c.id)}>
-          {c.title}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+    console.log("formData" + formData);
+    console.log("classification" + formData.classification);
+    const index = category.id;
+    console.log(formData.classification[index]);
+    console.log("category_ID" + category.id);
+    formData.classification[category.id].push(card);
+    // delete formData.cardList[formData.cardList.length - 1];
+  };
+  useEffect(() => {
+    // console.log("[debug] preview-editor", formData);
+    const tmp = [];
+    for (let i = 0; i < formData.categoryList.length; i++) {
+      tmp.push(
+        <div key={`cardCategory_${i}`} className="preview-editor-category">
+          {/* {formData.categoryList[i].title} */}
+          <Card
+            style={{
+              width: 300,
+              height: 150,
+              textAlign: "center",
+              justifyContent: "center",
+            }}
+          >
+            {formData.classification[categoryList[i].id].map((card) => {
+              return <div>{card.description}</div>;
+            })}
+            <Button onClick={() => handleDeleteCard(formData.categoryList[i])}>
+              {formData.categoryList[i].title}
+              {/* <div>
+                <text>{JSON.stringify(formData.classification[categoryList[i].id][0])}</text>
+              </div> */}
+            </Button>
+            
+            {/* {formData.classification[formData.categoryList[i].id]} */}
+          </Card>
+        </div>
+      );
+    }
+    setCategoryElementList(tmp);
+  }, [formData]);
+
   const carouselRef = useRef(null);
-//   const carouselRef = useRef(null);
+  //   const carouselRef = useRef(null);
 
   return (
-    <div>
-      <div>
-        <Carousel
-          ref={carouselRef}
-          dots={false}
-          infinite={false}
-          className="preview-editor-images"
-        >
-          {cardElementList.length > 0 && cardElementList}
-          {cardElementList.length <= 0 && (
-            <div>
-              <h3>Please upload some images</h3>
-            </div>
-          )}
-        </Carousel>
-        </div>
-      <Spin spinning={isLoading}>
-        <Collapse>
-          {categoryList.map((category) => (
-            <Collapse.Panel key={category.id} header={category.title}>
-              <List
-                dataSource={classification[category.id] || []}
-                renderItem={(card) => (
-                  <List.Item>
-                    <Card
-                      actions={[
-                        <Dropdown
-                          key={card.id}
-                          overlay={menu(card, category.id)}
-                        >
-                          <Button>Move</Button>
-                        </Dropdown>,
-                      ]}
-                    >
-                      {card.description}
-                    </Card>
-                  </List.Item>
-                )}
-              />
-            </Collapse.Panel>
-          ))}
-        </Collapse>
-      </Spin>
+    <div className="preview-editor-container">
+      <Carousel
+        ref={carouselRef}
+        dots={false}
+        infinite={false}
+        className="preview-editor-images"
+      >
+        {cardElementList.length > 0 && cardElementList}
+        {cardElementList.length <= 0 && (
+          <div>
+            <h3>Please upload some images</h3>
+          </div>
+        )}
+      </Carousel>
+
+      <br />
+      <br />
+      <br />
+
+      <div className="preview-editor-category">
+        {categoryElementList.length > 0 && categoryElementList}
+        {categoryElementList.length <= 0 && (
+          <div>
+            <h3>Please upload some categories</h3>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
