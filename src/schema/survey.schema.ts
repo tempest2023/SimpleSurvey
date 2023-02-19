@@ -1,4 +1,4 @@
-import { object, number, string, TypeOf } from "zod";
+import { object, string, TypeOf } from "zod";
 
 /**
  * @openapi
@@ -13,7 +13,7 @@ import { object, number, string, TypeOf } from "zod";
  *          title:
  *            type: string
  *          content:
- *            type: string
+ *            type: object
  *      CreateSurveyInput:
  *        type: object
  *        required:
@@ -23,14 +23,14 @@ import { object, number, string, TypeOf } from "zod";
  *          title:
  *            type: string
  *          content:
- *            type: string
+ *            type: object
  *      CreateSurveyResponse:
  *        type: object
  *        properties:
  *          title:
  *            type: string
  *          content:
- *            type: string
+ *            type: object
  *          _id:
  *            type: string
  *          createdAt:
@@ -49,6 +49,38 @@ import { object, number, string, TypeOf } from "zod";
  *          title:
  *            type: string
  *          content:
+ *            type: object
+ */
+
+/**
+ * @openapi
+ * components:
+ *    schema:
+ *      SortingCard:
+ *        type: object
+ *        required:
+ *          - cardList
+ *          - categoryList
+ *          - classification
+ *        properties:
+ *          cardList:
+ *            type: array<cardListItem>
+ *          categoryList:
+ *            type: array<string>
+ *          classification:
+ *            type: object
+ *      cardListItem:
+ *        type: object
+ *        required:
+ *          - id
+ *          - cardImage
+ *          - description
+ *        properties:
+ *          id:
+ *            type: string
+ *          cardImage:
+ *            type: string
+ *          description:
  *            type: string
  */
 
@@ -57,8 +89,8 @@ const payload = {
     title: string({
       required_error: "survey title is required",
     }).max(120, "Title should be at most 120 characters long"),
-    content: string({
-      required_error: "survey content is required",
+    content: object({},{
+      required_error: "survey title is required",
     }),
   }),
 };

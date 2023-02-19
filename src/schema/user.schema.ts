@@ -14,16 +14,16 @@ import { object, string, TypeOf } from "zod";
  *      properties:
  *        email:
  *          type: string
- *          default: jane.doe@example.com
+ *          default: tar118@pitt.edu
  *        name:
  *          type: string
- *          default: Jane Doe
+ *          default: Tempest
  *        password:
  *          type: string
- *          default: stringPassword123
+ *          default: 123456admin$
  *        passwordConfirmation:
  *          type: string
- *          default: stringPassword123
+ *          default: 123456admin$
  *    CreateUserResponse:
  *      type: object
  *      properties:

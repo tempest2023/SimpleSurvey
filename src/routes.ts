@@ -9,8 +9,16 @@ import {
   createSurveyHandler,
   deleteSurveyHandler,
   getSurveyHandler,
-  updateSurveyHandler,
+  getSurveysByUserIdHandler,
+  updateSurveyHandler
 } from "./controller/survey.controller"
+import {
+  createUrlHandler,
+  deleteUrlHandler,
+  getUrlHandler,
+  getUrlByUrlLink,
+  updateUrlHandler,
+} from "./controller/url.controller"
 import {
   createUserSessionHandler,
   getUserSessionsHandler,
@@ -33,6 +41,13 @@ import {
 } from "./schema/survey.schema"
 import { createSessionSchema } from "./schema/session.schema";
 import { createUserSchema } from "./schema/user.schema";
+import {
+  createUrlSchema,
+  deleteUrlSchema,
+  getUrlSchema,
+  getUrlByLinkSchema,
+  updateUrlSchema,
+} from "./schema/url.schema";
 
 function routes(app: Express) {
   /**
@@ -220,10 +235,119 @@ function routes(app: Express) {
     getSurveyHandler
   );
 
+  app.get(
+    "/api/surveys",
+    [requireUser],
+    getSurveysByUserIdHandler
+  )
+
   app.delete(
     "/api/surveys/:surveyId",
     [requireUser, validateResource(deleteSurveySchema)],
     deleteSurveyHandler
+  );
+
+  /**
+   * @openapi
+   * '/api/url':
+   *  post:
+   *     tags:
+   *     - Url
+   *     summary: Create a url record with surveyId, userId and url link
+   *     requestBody:
+   *      required: true
+   *      content:
+   *        application/json:
+   *           schema:
+   *              $ref: '#/components/schema/CreateUrlInput'
+   *     responses:
+   *      200:
+   *        description: Success
+   *        content:
+   *          application/json:
+   *            schema:
+   *              $ref: '#/components/schema/CreateUrlResponse'
+   *      409:
+   *        description: Conflict
+   *      400:
+   *        description: Bad request
+   */
+
+  app.post(
+    "/api/url",
+    validateResource(createUrlSchema),
+    createUrlHandler
+  )
+
+  /**
+   * @openapi
+   * '/api/url/{urlId}':
+   *  get:
+   *     tags:
+   *     - Url
+   *     summary: Get a url record by the urlId
+   *     parameters:
+   *      - name: urlId
+   *        in: path
+   *        description: The id of the url record
+   *        required: true
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *           schema:
+   *              $ref: '#/components/schema/Url'
+   *       404:
+   *         description: Url not found
+   *  put:
+   *     tags:
+   *     - Url
+   *     summary: Update a url record
+   *     parameters:
+   *      - name: urlId
+   *        in: path
+   *        description: The id of the url record
+   *        required: true
+   *     requestBody:
+   *      required: true
+   *      content:
+   *       application/json:
+   *        schema:
+   *           $ref: '#/components/schema/UpdateUrlInput'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *           schema:
+   *              $ref: '#/components/schema/Url'
+   *       404:
+   *         description: Url not found
+   */
+
+  app.put(
+    "/api/url/:urlId",
+    [requireUser, validateResource(updateUrlSchema)],
+    createUrlHandler
+  )
+
+  app.get(
+    "/api/url/:urlId",
+    validateResource(getUrlSchema),
+    getUrlHandler
+  );
+
+  app.get(
+    "/api/url/:url",
+    validateResource(getUrlByLinkSchema),
+    getUrlByUrlLink
+  );
+
+  app.delete(
+    "/api/url/:urlId",
+    [requireUser, validateResource(deleteUrlSchema)],
+    deleteUrlHandler
   );
 }
 

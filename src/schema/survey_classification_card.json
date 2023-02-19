@@ -1,0 +1,28 @@
+{
+  "cardList": [
+    {
+      "id": 1,
+      "cardImage": "base64 String",
+      "description": "This is a description"
+    },
+    {
+      "id": 2,
+      "cardImage": "base64 String",
+      "description": "This is a description"
+    }
+  ],
+  "categoryList": [
+    "Category 1",
+    "Category 2",
+    "Category 3",
+    "Category 4"
+  ],
+  "classification": {
+    "Category 1": [
+      1
+    ],
+    "Category 2": [2],
+    "Category 3": [],
+    "Category 4": []
+  }
+}
