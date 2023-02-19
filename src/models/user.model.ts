@@ -1,11 +1,22 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import config from "config";
+import { Schema, model, Document } from 'mongoose';
+import { UserPermission, PermissionSet } from '../schema/user.schema';
 
 export interface UserInput {
+  parent_id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   password: string;
+  role: string;
+  permission: PermissionSet;
+}
+
+export interface UserNameInput {
+  firstName: string;
+  lastName: string;
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -14,21 +25,45 @@ export interface UserDocument extends UserInput, mongoose.Document {
   comparePassword(candidatePassword: string): Promise<Boolean>;
 }
 
+
 const userSchema = new mongoose.Schema(
   {
+    
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, required: true, default: "user" },
+    parent_id: { type: String, required: true},
+    role: {
+      type: String,
+      enum: ['admin', 'clinician', 'patient'],
+      required: true
+    },
+    parentId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  permission: {
+    type: [String],
+    validate: {
+      validator: function (v) {
+        return v.length === 0 || v.every(e => Object.values(UserPermission).includes(e));
+      },
+      message: props => `${props.value} is not a valid permission.`
+    }
+  }
   },
   {
     timestamps: true,
   }
 );
 
-userSchema.pre("save", async function (next) {
-  let user = this as UserDocument;
 
+
+userSchema.pre("save", async function (next) {
+  // let user = this as UserDocument;
+
+  let user = this;
   if (!user.isModified("password")) {
     return next();
   }
@@ -40,6 +75,20 @@ userSchema.pre("save", async function (next) {
   user.password = hash;
 
   return next();
+});
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  if (this.role === 'admin' || this.role === 'clinician' || this.role === 'patient') {
+    return next();
+  }
+
+  const err = new Error('Invalid role');
+  err.name = 'ValidationError';
+  next(err);
 });
 
 userSchema.methods.comparePassword = async function (

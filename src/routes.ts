@@ -4,6 +4,7 @@ import {
   getProductHandler,
   updateProductHandler,
   deleteProductHandler,
+  
 } from "./controller/product.controller";
 import {
   createSurveyHandler,
@@ -16,7 +17,7 @@ import {
   getUserSessionsHandler,
   deleteSessionHandler,
 } from "./controller/session.controller";
-import { createUserHandler } from "./controller/user.controller";
+import { createUserHandler, deleteUserHandler, getUserHandler} from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
@@ -32,7 +33,7 @@ import {
   updateSurveySchema,
 } from "./schema/survey.schema"
 import { createSessionSchema } from "./schema/session.schema";
-import { createUserSchema } from "./schema/user.schema";
+import { createUserSchema} from "./schema/user.schema";
 
 function routes(app: Express) {
   /**
@@ -74,6 +75,10 @@ function routes(app: Express) {
    *        description: Bad request
    */
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
+
+  app.delete("/api/users/:id", deleteUserHandler);
+
+  app.get("/api/users/:id", getUserHandler);
 
   app.post(
     "/api/sessions",

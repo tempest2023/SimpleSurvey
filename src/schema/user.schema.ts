@@ -1,4 +1,5 @@
-import { object, string, TypeOf } from "zod";
+import * as z from "zod";
+import { array, object, string, TypeOf } from "zod";
 
 /**
  * @openapi
@@ -38,11 +39,42 @@ import { object, string, TypeOf } from "zod";
  *        updatedAt:
  *          type: string
  */
+const UserRole = z.enum(["Admin", "Patient", "Clinician"]);
+type UserRole = z.infer<typeof UserRole>;
+
+export const UserPermission = z.enum([
+  "createAdmin",
+  "updateAdmin",
+  "retrieveAdmin",
+  "deleteAdmin",
+
+  "createPatient",
+  "updatePatient",
+  "retrievePatient",
+  "deletePatient",
+
+  "createClin",
+  "updateClin",
+  "retrieveClin",
+  "deleteClin",
+]);
+export type PermissionEnum = z.infer<typeof UserPermission>;
+
+const PermissionSet = z.set(UserPermission);
+
+export type PermissionSet = z.infer<typeof PermissionSet>;
+
+
 
 export const createUserSchema = object({
+  
   body: object({
-    name: string({
-      required_error: "Name is required",
+    role: UserRole,
+    firstName: string({
+      required_error: "First name is required",
+    }),
+    lastName: string({
+      required_error: "Last name is required",
     }),
     password: string({
       required_error: "Name is required",
@@ -50,6 +82,8 @@ export const createUserSchema = object({
     passwordConfirmation: string({
       required_error: "passwordConfirmation is required",
     }),
+    //
+    permission: array(z.string()),
     email: string({
       required_error: "Email is required",
     }).email("Not a valid email"),

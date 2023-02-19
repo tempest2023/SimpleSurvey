@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import { StylesManager, Model } from 'survey-core';
+import {UserList} from './main/UserList'
 import { Survey } from 'survey-react-ui';
 import './App.css'
 import 'survey-core/defaultV2.min.css';
@@ -26,7 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      <Survey model={survey} />
+      <UserList/>
     </div>
   )
 }

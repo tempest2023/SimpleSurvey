@@ -5,6 +5,7 @@ import ProductModel, {
 } from "../models/product.model";
 import { databaseResponseTimeHistogram } from "../utils/metrics";
 
+
 export async function createProduct(input: ProductInput) {
   const metricsLabels = {
     operation: "createProduct",
@@ -36,7 +37,6 @@ export async function findProduct(
     return result;
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
-
     throw e;
   }
 }
