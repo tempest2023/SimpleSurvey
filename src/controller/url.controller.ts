@@ -12,6 +12,7 @@ import {
   deleteUrl,
   findAndUpdateUrl,
   findUrl,
+  findUrls,
 } from "../service/url.service";
 import {
   findSurvey
@@ -68,12 +69,25 @@ export async function getUrlHandler(
   return res.send(url);
 }
 
-export async function getUrlByUrlLink(
+export async function getUrlByLinkHandler(
   req: Request<ReadUrlByLinkInput["params"]>,
   res: Response
 ) {
   const url = req.params.url;
   const urlRes = await findUrl({ url});
+  console.log('[log][url.controller.ts] getUrlByLink, link: ', url, ', urlRes: ', urlRes)
+  if (!urlRes) {
+    return res.sendStatus(404);
+  }
+  return res.send(urlRes);
+}
+
+export async function getUrlsByUserIdHandler(
+  req: Request,
+  res: Response
+) {
+  const userId = res.locals.user._id;
+  const urlRes = await findUrls({ userId });
 
   if (!urlRes) {
     return res.sendStatus(404);

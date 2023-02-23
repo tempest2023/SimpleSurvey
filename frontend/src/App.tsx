@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import { StylesManager, Model } from 'survey-core';
 import { Survey } from 'survey-react-ui';
+import SurveyEditor from './components/survey-editor';
 import './App.css'
 import 'survey-core/defaultV2.min.css';
 
@@ -26,7 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      <Survey model={survey} />
+      <SurveyEditor />
     </div>
   )
 }
