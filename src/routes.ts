@@ -16,7 +16,8 @@ import {
   createUrlHandler,
   deleteUrlHandler,
   getUrlHandler,
-  getUrlByUrlLink,
+  getUrlByLinkHandler,
+  getUrlsByUserIdHandler,
   updateUrlHandler,
 } from "./controller/url.controller"
 import {
@@ -329,7 +330,7 @@ function routes(app: Express) {
   app.put(
     "/api/url/:urlId",
     [requireUser, validateResource(updateUrlSchema)],
-    createUrlHandler
+    updateUrlHandler
   )
 
   app.get(
@@ -339,10 +340,16 @@ function routes(app: Express) {
   );
 
   app.get(
-    "/api/url/:url",
-    validateResource(getUrlByLinkSchema),
-    getUrlByUrlLink
+    "/api/urls",
+    [requireUser],
+    getUrlsByUserIdHandler
   );
+
+  app.get(
+    "/api/urllink/:url(*)",
+    [validateResource(getUrlByLinkSchema)],
+    getUrlByLinkHandler
+  )
 
   app.delete(
     "/api/url/:urlId",

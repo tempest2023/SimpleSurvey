@@ -53,6 +53,25 @@ export async function findUrl(
   }
 }
 
+export async function findUrls(
+  query: FilterQuery<UrlDocument>,
+  options: QueryOptions = { lean: true }
+) {
+  const metricsLabels = {
+    operation: "findUrls",
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const result = await UrlModel.find(query, {}, options);
+    timer({ ...metricsLabels, success: "true" });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: "false" });
+    throw e;
+  }
+}
+
 export async function findAndUpdateUrl(
   query: FilterQuery<UrlDocument>,
   update: UpdateQuery<UrlDocument>,
