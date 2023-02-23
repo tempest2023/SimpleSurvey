@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
     parent_id: { type: String, required: true},
     role: {
       type: String,
-      enum: ['admin', 'clinician', 'patient'],
+      enum: ['admin', 'clinician'],
       required: true
     },
     parentId: {
@@ -67,13 +67,9 @@ userSchema.pre("save", async function (next) {
   if (!user.isModified("password")) {
     return next();
   }
-
   const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
-
   const hash = await bcrypt.hashSync(user.password, salt);
-
   user.password = hash;
-
   return next();
 });
 
@@ -82,7 +78,7 @@ userSchema.pre('save', function (next) {
     return next();
   }
 
-  if (this.role === 'admin' || this.role === 'clinician' || this.role === 'patient') {
+  if (this.role === 'admin' || this.role === 'clinician') {
     return next();
   }
 

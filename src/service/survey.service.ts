@@ -41,6 +41,26 @@ export async function findSurvey(
   }
 }
 
+export async function findSurveys(
+  query: FilterQuery<SurveyDocument>,
+  options: QueryOptions = { lean: true }
+) {
+  const metricsLabels = {
+    operation: "findSurveys",
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const result = await SurveyModel.find(query, {}, options);
+    timer({ ...metricsLabels, success: "true" });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: "false" });
+
+    throw e;
+  }
+}
+
 export async function findAndUpdateSurvey(
   query: FilterQuery<SurveyDocument>,
   update: UpdateQuery<SurveyDocument>,

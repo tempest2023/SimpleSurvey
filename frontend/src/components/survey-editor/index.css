@@ -1,0 +1,14 @@
+.survey-editor {
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+.survey-tabbar {
+  height: 50px;
+  padding: 5px;
+}
+
+.ant-tabs-nav {
+  margin: 0!important;
+}

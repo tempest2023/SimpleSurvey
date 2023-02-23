@@ -7,7 +7,7 @@ const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 export interface SurveyInput {
   user: UserDocument["_id"]; // ObjectId, a Ref to User
   title: string;
-  content: string;
+  content: object;
 }
 
 export interface SurveyDocument extends SurveyInput, mongoose.Document {
@@ -25,7 +25,7 @@ const surveySchema = new mongoose.Schema(
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     title: { type: String, required: true },
-    content: { type: String, required: true },
+    content: { type: Object, required: true, default: {} },
   },
   {
     timestamps: true,

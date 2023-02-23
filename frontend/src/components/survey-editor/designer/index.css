@@ -1,0 +1,54 @@
+/* common screen css */
+.designer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - 50px);
+}
+/* left menu, hold 1/4 of page */
+.menu-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* height: 100%; */
+  overflow-y: scroll;
+  width: 100%;
+  padding: 5px;
+  border-right: 1px solid #ccc;
+  padding-left: 5px;
+}
+.menu-item-button {
+  text-align: left; 
+}
+/* middle content, hold 1/2 of page */
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+  /* height: 100%; */
+  overflow-y: scroll;
+  width: 100%;
+  border-right: 1px solid #ccc;
+}
+/* right config, hold 1/4 of page */
+.config-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* height: 100%; */
+  overflow-y: scroll;
+  width: 100%;
+}
+
+
+/* for PC screen */
+@media (min-width: 768px) {
+  
+}
+
+/* for mobile screen */
+@media (max-width: 767px) {
+  
+}
