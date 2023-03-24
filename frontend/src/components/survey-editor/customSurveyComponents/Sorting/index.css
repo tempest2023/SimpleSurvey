@@ -1,0 +1,12 @@
+.card-img {
+  height: 100%;
+}
+
+#cards_progress_bar {
+  background-color: #0000ff;
+}
+
+#submit_clusters_btn {
+  background-color: #0000ff;
+  color: #ffffff;
+}

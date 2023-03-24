@@ -42,6 +42,10 @@
   width: 100%;
 }
 
+.configForm {
+  padding: 20px 20px 0 20px;
+}
+
 
 /* for PC screen */
 @media (min-width: 768px) {

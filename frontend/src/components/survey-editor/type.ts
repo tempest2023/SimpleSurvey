@@ -1,45 +1,48 @@
-export interface SurveyComponent {
+import { TextInputData } from './customSurveyComponents/TextInput/type';
+import { SortingCardBinData } from './customSurveyComponents/Sorting/type';
+// type of components config props
+export interface ComponentConfigProps {
+  data: SurveyComponentData;
+  updateData: (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+}
+
+// the data structure of a survey component, after instantiation the id will be generated
+export interface SurveyComponentData {
   id: string;
   type: string;
   name: string;
-  title?: string;
 }
 
-export interface TextInput extends SurveyComponent {
-  type: "input";
+interface RadioInputData extends SurveyComponentData {
+  type: 'radio';
+  options: Array<string>;
+}
+interface RankData extends SurveyComponentData {
+  type: 'rank';
+  items: Array<string>;
 }
 
-export interface RadioGroupInput extends SurveyComponent {
-  type: "radiogroup";
-  choices: Array<string>;
+interface CheckboxData extends SurveyComponentData {
+  type: 'checkbox';
+  options: Array<string>;
 }
 
-export interface CheckBoxInput extends SurveyComponent {
-  type: "checkbox";
-  choices: Array<string>;
-}
 
-export interface RatingInput extends SurveyComponent {
-  type: "rating";
-  rateMin: number;
-  rateMax: number;
-}
+export type ComponentData = TextInputData | RadioInputData | SortingCardBinData | RankData | CheckboxData;
 
 export interface Page {
   id: string;
   name: string;
   description?: string;
-  elements: Array<SurveyComponent> | null;
+  elements: Array<SurveyComponentData> | null;
 }
 
-export interface SelectedData {
-  componentId: string;
-  componentType: string;
-  data: SurveyComponent;
-};
-
 export interface SurveyJson {
-  surveyId: string;
+  _surveyId: string;
   surveyName: string;
   pages: Array<Page>;
+}
+
+export type SurveyComponentProps = {
+  data: SurveyComponentData;
 }

@@ -1,4 +1,12 @@
 .preview-web-panel {
   width: 100%;
-  height: calc(100vh);
+  height: calc(100vh - 50px);
+}
+
+.log {
+  margin: 1rem;
+  padding: 0.2rem;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }

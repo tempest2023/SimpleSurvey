@@ -11,7 +11,7 @@ export const createSurveyJson = (pagesNumber: number): SurveyJson => {
     })
   }
   return {
-    surveyId: nanoid(),
+    _surveyId: nanoid(),
     surveyName: "Untitled Survey",
     pages,
   }
