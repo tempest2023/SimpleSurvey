@@ -11,14 +11,17 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .sorting-card-image {
   width: auto;
   height: auto;
   max-width: 300px;
+  max-height: 300px;
   min-width: 150px;
   min-height: 150px;
   border-radius: 15px;
 }
+
 .sorting-card-item-info {
   display: flex;
   flex-direction: column;
@@ -27,15 +30,18 @@
   width: 100%;
   padding: 5px;
 }
+
 .sorting-card-item-title {
   font-size: 1.2rem;
   font-weight: bold;
   color: #333;
 }
+
 .sorting-card-item-desc {
   font-size: 1rem;
   color: #333;
 }
+
 .sorting-bin-container {
   display: flex;
   flex-wrap: wrap;
@@ -47,16 +53,41 @@
   padding: 5px;
   margin: 5px;
 }
-.sorting-each-bin {
-  width: 200px;
-  height: auto;
-  min-height: 150px;
+
+.sorting-bin-title {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  padding: 5px;
+  border: 1px solid #9f9ff2;
+  border-bottom: 0;
+  background: #9f9ff2;
+  border-radius: 5px;
+  /* set border bottom left radius as 0 */
+  border-bottom-left-radius: 0;
+  /* set border bottom right radius as 0 */
+  border-bottom-right-radius: 0;
+}
+
+.sorting-bin-box {
+  width: 200px;
+  height: auto;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #9f9ff2;
+  border-radius: 5px;
+  /* set border top left radius as 0 */
+  border-top-left-radius: 0;
+  /* set border top right radius as 0 */
+  border-top-right-radius: 0;
 }
 
 .sorting-bin-outter {

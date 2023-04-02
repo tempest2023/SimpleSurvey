@@ -22,6 +22,7 @@ import {
   DownOutlined,
   DeleteOutlined,
   EditOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
 import {
   SortingBin,
@@ -30,7 +31,7 @@ import {
   SortingConfigProps,
   SortingCardProps,
 } from "./type";
-import { querySelectedData } from "../../utils";
+import { querySelectedData, ellipseString } from "../../utils";
 import { SurveyComponentData } from "../../type";
 import ButtonModal from "../../../buttonModal";
 import "./index.css";
@@ -39,77 +40,73 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
   if (!data) {
     return <div>No data in Sorting Card</div>;
   }
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [hoveredBinId, setHoveredBinId] = useState("");
-
-  const {
-    title = "Sorting Card",
-    cardList = [],
-    binList = [],
-    sorting = {},
-  } = data as SortingCardBinData;
-
+  const [cardList, setCardList] = useState<SortingCard[]>(data.cardList || []);
+  const [binList, setBinList] = useState<SortingBin[]>(data.binList || []);
+  const [sorting, setSorting] = useState<{ [name: string]: SortingCard[] }>({});
+  const [currentCardInd, setCurrentCardInd] = useState(0);
+  useEffect(()=>{
+    if (!data) {
+      return;
+    }
+    data.cardList && setCardList(data.cardList);
+    data.binList && setBinList(data.binList);
+  }, [data])
+  console.log(
+    `[debug] cardList: ${JSON.stringify(cardList)}, binList ${JSON.stringify(
+      binList
+    )}, data ${JSON.stringify(data)}`
+  );
   const binCount = binList.length;
   const cardCount = cardList.length;
-
-  const handleBinClick = (binId: string) => {
-    if (currentCardIndex + 1 >= cardCount) {
-      setCurrentCardIndex(0);
-    } else {
-      setCurrentCardIndex(currentCardIndex + 1);
-    }
-    if (!sorting[binId]) {
-      sorting[binId] = [];
-    }
-    sorting[binId].push(cardList[currentCardIndex]);
-  };
 
   const moveCardToBin = (cardId: string, binId: string) => {
     console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
     if (!cardId || !binId) {
       return;
     }
-    const card = cardList.find((card) => card.id === cardId);
+    let tmpCardList = [...cardList];
+    let card = null;
+    // find the card and remove it from cardList
+    for (let i = 0; i < tmpCardList.length; i++) {
+      if (tmpCardList[i].id === cardId) {
+        card = tmpCardList[i];
+        tmpCardList.splice(i, 1);
+        break;
+      }
+    }
     if (!card) {
+      console.log('[debug] [survey-editor/customSurveyComponents/Sorting/index.tsx] moveCardToBin: card not found', cardId, binId)
       return;
     }
     if (!sorting[binId]) {
       sorting[binId] = [];
     }
     sorting[binId].push(card);
-    card.isMoved = true;
-  };
-
-  const handleMenuVisibleChange = (visible: boolean) => {
-    if (!visible) {
-      setHoveredBinId("");
-    }
+    setCardList([...tmpCardList]);
+    setSorting({ ...sorting });
   };
 
   const handleRestoreClick = (cardId: string, binId: string) => {
     const index = sorting[binId].findIndex((card) => card.id === cardId);
+    if (index === -1) {
+      return;
+    }
+    let card = sorting[binId][index];
     sorting[binId].splice(index, 1);
-  };
-
-  const handleBinMouseEnter = (binId: string) => {
-    setHoveredBinId(binId);
-  };
-
-  const handleBinMouseLeave = () => {
-    setHoveredBinId("");
+    setCardList([card, ...cardList]);
+    setSorting({ ...sorting });
   };
 
   const renderCard = () => {
-    const { id, title, description, cardImage, isMoved } =
+    const { id, title, description, cardImage } =
       cardList.length === 0
         ? {
             id: "",
             title: "",
             description: "",
             cardImage: "",
-            isMoved: false,
           }
-        : cardList[currentCardIndex];
+        : cardList[currentCardInd];
     const items: MenuProps["items"] = binList.map((bin) => {
       return {
         label: (
@@ -133,9 +130,9 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
               <Divider />
               <Dropdown
                 menu={{ items }}
-                disabled={isMoved || binList.length === 0}
+                disabled={binList.length === 0 || cardList.length === 0}
               >
-                <Button onClick={(e) => e.preventDefault()}>
+                <Button disabled={binList.length === 0 || cardList.length === 0} type="primary" onClick={(e) => e.preventDefault()}>
                   <Space>Move To</Space>
                 </Button>
               </Dropdown>
@@ -153,48 +150,16 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
           const binSorting = sorting[bin.id] || [];
           return (
             <div key={`bin_` + bin.id} className="sorting-bin-outter">
-              <span>{bin.title}</span>
-              <div className="sorting-each-bin">
+              <span className="sorting-bin-title">{bin.title}</span>
+              <div className="sorting-bin-box">
                 {binSorting.map((card) => (
-                  <AntCard
+                  <span
                     key={card.id}
-                    title={card.title}
-                    extra={
-                      <Button
-                        type="link"
-                        onClick={() => handleRestoreClick(card.id, bin.id)}
-                        disabled={cardList[currentCardIndex].id !== card.id}
-                      >
-                        Remove
-                      </Button>
-                    }
                   >
-                    <AntCard.Meta description={card.description} />
-                  </AntCard>
+                    <span className="sorting-card-item-title">{ellipseString(card.title, 5)}</span>
+                    <Popover content='Remove'><Button type="ghost" icon={<RollbackOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
+                  </span>
                 ))}
-                {hoveredBinId === bin.id && (
-                  <Dropdown
-                    menu={{
-                      items: binList
-                        .filter((item) => item.id !== bin.id)
-                        .map((item) => {
-                          return {
-                            label: (
-                              <Button
-                                key={item.id}
-                                onClick={() => handleBinClick(item.id)}
-                              >
-                                {item.title}
-                              </Button>
-                            ),
-                            key: item.id,
-                          };
-                        }) as MenuProps["items"],
-                    }}
-                    placement="bottomRight"
-                    arrow
-                  ></Dropdown>
-                )}
               </div>
             </div>
           );
@@ -206,30 +171,30 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
   return (
     <div>
       <span className="sorting-card-progress-bar-info">{`Cards: ${
-        cardCount > 0 ? currentCardIndex + 1 : 0
+        cardCount > 0 ? currentCardInd + 1 : 0
       }/${cardCount}`}</span>
       <Progress
         width={80}
-        percent={(currentCardIndex / (cardCount === 0 ? 1 : cardCount)) * 100}
+        percent={(currentCardInd / (cardCount === 0 ? 1 : cardCount)) * 100}
         showInfo={false}
       />
       {renderCard()}
-      {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardIndex+1 : 0}/${cardCount}`}</div> */}
+      {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardInd+1 : 0}/${cardCount}`}</div> */}
       {renderBins()}
       <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button
-          disabled={currentCardIndex === 0}
-          onClick={() => setCurrentCardIndex(currentCardIndex - 1)}
+        {/* <Button
+          disabled={currentCardInd === 0}
+          onClick={() => setCurrentCardInd(currentCardInd - 1)}
         >
           Previous
         </Button>
         <Button
-          disabled={currentCardIndex === cardCount - 1}
-          onClick={() => setCurrentCardIndex(currentCardIndex + 1)}
+          disabled={currentCardInd === cardCount - 1}
+          onClick={() => setCurrentCardInd(currentCardInd + 1)}
         >
           Next
-        </Button>
-        {currentCardIndex === cardCount - 1 && (
+        </Button> */}
+        {currentCardInd === cardCount - 1 && (
           <Button type="primary">Continue</Button>
         )}
       </div>
@@ -416,7 +381,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     const [cardEditForm] = Form.useForm();
     useEffect(() => {
       cardEditForm.setFieldsValue(card);
-    })
+    });
     return (
       <Form
         form={cardEditForm}

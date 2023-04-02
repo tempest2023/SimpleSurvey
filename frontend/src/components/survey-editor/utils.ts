@@ -90,3 +90,10 @@ export const queryPageById = (data: SurveyJson | null, pageId: string | null): P
   );
   return res;
 }
+
+export const ellipseString = (str: string, length: number): string => {
+  if (str.length > length) {
+    return str.slice(0, length) + '...';
+  }
+  return str;
+}
