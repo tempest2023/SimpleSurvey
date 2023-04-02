@@ -9,7 +9,7 @@ import "./index.css";
 
 function SurveyEditor() {
   const onChange = (key: string) => {
-    console.log(key);
+    console.log(`[debug] [survey-editor/index.tsx] tab changed to: [${key}]`);
   };
   
   const items: TabsProps['items'] = [
@@ -23,11 +23,11 @@ function SurveyEditor() {
       label: `Preview`,
       children: <Preview />,
     },
-    {
-      key: '3',
-      label: `Logic`,
-      children: <LogicPanel />,
-    },
+    // {
+    //   key: '3',
+    //   label: `Logic`,
+    //   children: <LogicPanel />,
+    // },
     {
       key: '4',
       label: `JSON`,
