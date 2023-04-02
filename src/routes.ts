@@ -21,6 +21,13 @@ import {
   updateUrlHandler,
 } from "./controller/url.controller"
 import {
+  createProjectHandler,
+  deleteProjectHandler,
+  getProjectHandler,
+  getProjectsByUserIdHandler,
+  updateProjectHandler,
+} from "./controller/project.controller"
+import {
   createUserSessionHandler,
   getUserSessionsHandler,
   deleteSessionHandler,
@@ -49,6 +56,12 @@ import {
   getUrlByLinkSchema,
   updateUrlSchema,
 } from "./schema/url.schema";
+import {
+  createProjectSchema,
+  deleteProjectSchema,
+  getProjectSchema,
+  updateProjectSchema,
+} from "./schema/project.schema";
 
 function routes(app: Express) {
   /**
@@ -355,6 +368,82 @@ function routes(app: Express) {
     "/api/url/:urlId",
     [requireUser, validateResource(deleteUrlSchema)],
     deleteUrlHandler
+  );
+
+  app.post(
+    "/api/projects",
+    [requireUser, validateResource(createProjectSchema)],
+    createProjectHandler
+  );
+
+  /**
+   * @openapi
+   * '/api/projects/{projectId}':
+   *  get:
+   *     tags:
+   *     - Project
+   *     summary: Get a single project by the projectId
+   *     parameters:
+   *      - name: projectId
+   *        in: path
+   *        description: The id of the project
+   *        required: true
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *           schema:
+   *              $ref: '#/components/schema/Project'
+   *       404:
+   *         description: Project not found
+   *  put:
+   *     tags:
+   *     - Project
+   *     summary: Update a project
+   *     parameters:
+   *      - name: projectId
+   *        in: path
+   *        description: The id of the project
+   *        required: true
+   *     requestBody:
+   *      required: true
+   *      content:
+   *       application/json:
+   *        schema:
+   *           $ref: '#/components/schema/UpdateProjectInput'
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *           schema:
+   *              $ref: '#/components/schema/Project'
+   *       404:
+   *         description: Project not found
+   */
+  app.put(
+    "/api/projects/:projectId",
+    [requireUser, validateResource(updateProjectSchema)],
+    updateProjectHandler
+  );
+
+  app.get(
+    "/api/projects/:projectId",
+    validateResource(getProjectSchema),
+    getProjectHandler
+  );
+
+  app.get(
+    "/api/projects",
+    [requireUser],
+    getProjectsByUserIdHandler
+  )
+
+  app.delete(
+    "/api/projects/:projectId",
+    [requireUser, validateResource(deleteProjectSchema)],
+    deleteProjectHandler
   );
 }
 
