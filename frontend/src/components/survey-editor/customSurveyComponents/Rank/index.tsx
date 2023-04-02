@@ -1,7 +1,15 @@
-export const RankView = (props) => {
-  return (<></>);
-}
+import { ComponentConfigProps, SurveyComponentData } from "../../type";
 
-export const RankConfig = (props) => {
-  return (<></>);
-}
+export const RankView = ({ data }: { data: SurveyComponentData }) => {
+  if (!data) {
+    return <div>No data in Rank Component</div>;
+  }
+  return <div></div>;
+};
+
+export const RankConfig = ({ data }: { data: ComponentConfigProps }) => {
+  if (!data) {
+    return <div>No data in Rank Config</div>;
+  }
+  return <div></div>;
+};

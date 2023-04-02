@@ -1,6 +1,7 @@
 .preview-web-panel {
   width: 100%;
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
+  height: auto;
 }
 
 .log {

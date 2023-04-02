@@ -9,7 +9,7 @@ export interface TextInputData extends SurveyComponentData {
 }
 
 export interface TextInputConfigProps extends ComponentConfigProps {
-  data: TextInputData;
+  data?: TextInputData;
 }
 
 export interface TextInputProps {

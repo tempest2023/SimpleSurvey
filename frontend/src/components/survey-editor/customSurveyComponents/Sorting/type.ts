@@ -5,8 +5,10 @@ export type SortingCard = {
   id: string;
   title: string;
   description: string;
+  rank: number,
   cardImage: string; // base64 encoded string
   isAvailable: boolean;
+  isMoved?: boolean; // for rendering check if this card is moved to bin
 };
 
 export type SortingBin = {
@@ -16,10 +18,7 @@ export type SortingBin = {
 
 export interface SortingCardBinData extends SurveyComponentData {
   type: "sortcard";
-  title: string;
-  cardCount: number;
   cardList: Array<SortingCard>;
-  binCount: number;
   binList: Array<SortingBin>;
   sorting: {
     [name: string]: Array<SortingCard>;
@@ -27,7 +26,7 @@ export interface SortingCardBinData extends SurveyComponentData {
 }
 
 export interface SortingConfigProps extends ComponentConfigProps {
-  data: SortingCardBinData;
+  data?: SortingCardBinData;
 }
 
 export interface SortingCardProps {

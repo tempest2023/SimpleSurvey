@@ -2,7 +2,7 @@ import { TextInputData } from './customSurveyComponents/TextInput/type';
 import { SortingCardBinData } from './customSurveyComponents/Sorting/type';
 // type of components config props
 export interface ComponentConfigProps {
-  data: SurveyComponentData;
+  data?: SurveyComponentData;
   updateData: (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
 }
 
@@ -11,6 +11,7 @@ export interface SurveyComponentData {
   id: string;
   type: string;
   name: string;
+  [key: string]: any;
 }
 
 interface RadioInputData extends SurveyComponentData {
@@ -32,7 +33,7 @@ export type ComponentData = TextInputData | RadioInputData | SortingCardBinData 
 
 export interface Page {
   id: string;
-  name: string;
+  title?: string;
   description?: string;
   elements: Array<SurveyComponentData> | null;
 }
