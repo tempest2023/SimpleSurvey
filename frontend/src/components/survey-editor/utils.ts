@@ -53,6 +53,16 @@ export const createSortRankSurveyJson = (): SurveyJson => {
   }
 }
 
+export const loadSurveyJsonFromLocalStorage = (): SurveyJson | null => {
+  const data = localStorage.getItem("surveyJson") || "";
+  try{
+    return JSON.parse(data);
+  } catch (e) {
+    console.log(`[error] [survey-editor/utils:loadSurveyJsonFromLocalStorage] ${e}`);
+  }
+  return null;
+}
+
 // iterate surveyJson to find selected element
 export const querySelectedData = (
   data: SurveyJson | null,

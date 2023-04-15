@@ -10,6 +10,7 @@ import { surveyComponentData } from "./surveyComponentData";
 import { TextInputConfig } from "../customSurveyComponents/TextInput";
 import { SortingConfig } from "../customSurveyComponents/Sorting";
 import { PageComponentConfig } from "../customSurveyComponents/Page";
+import { RankConfig } from "../customSurveyComponents/Rank";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
 import {
@@ -206,6 +207,8 @@ export default function Designer() {
       return;
     }
     handleSetSurveyJson(tmpSurveyJson);
+    // save to local storage
+    localStorage.setItem("surveyJson", JSON.stringify(tmpSurveyJson));
   };
 
   // console.log('[debug] [designer/index.tsx] surveyJson:', surveyJson)
@@ -264,6 +267,9 @@ export default function Designer() {
           )}
           {editorState.selectedElementData && editorState.selectedElementData.type === "sortcard" && (
             <SortingConfig updateData={upadteSurveyJson} />
+          )}
+          {editorState.selectedElementData && editorState.selectedElementData.type === "rank" && (
+            <RankConfig updateData={upadteSurveyJson} />
           )}
         </div>
       </div>

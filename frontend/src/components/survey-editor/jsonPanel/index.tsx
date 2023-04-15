@@ -4,7 +4,7 @@ import ReactJson from 'react-json-view';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
-import { SurveyJson, ComponentData, Page } from "../type";
+import { SurveyJson, Page } from "../type";
 import "./index.css";
 
 

@@ -22,7 +22,6 @@ import {
   DownOutlined,
   DeleteOutlined,
   EditOutlined,
-  RollbackOutlined,
 } from "@ant-design/icons";
 import {
   SortingBin,
@@ -51,16 +50,11 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     data.cardList && setCardList(data.cardList);
     data.binList && setBinList(data.binList);
   }, [data])
-  console.log(
-    `[debug] cardList: ${JSON.stringify(cardList)}, binList ${JSON.stringify(
-      binList
-    )}, data ${JSON.stringify(data)}`
-  );
   const binCount = binList.length;
   const cardCount = cardList.length;
 
   const moveCardToBin = (cardId: string, binId: string) => {
-    console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
+    // console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
     if (!cardId || !binId) {
       return;
     }
@@ -157,7 +151,7 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
                     key={card.id}
                   >
                     <span className="sorting-card-item-title">{ellipseString(card.title, 5)}</span>
-                    <Popover content='Remove'><Button type="ghost" icon={<RollbackOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
+                    <Popover content='Remove'><Button type="ghost" icon={<DeleteOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
                   </span>
                 ))}
               </div>
