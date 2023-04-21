@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../store/store";
-import { ComponentConfigProps, SurveyComponentData } from "../../type";
+import { SurveyCustomComponentProps, SurveyComponentData } from "../../type";
 import { Divider, Button, Form, Input, Table, Checkbox, List, Typography } from "antd";
 import { SortingCard } from "../Sorting/type";
 import { RankConfigProps, RankData, SortingBinSelected } from "./type";
@@ -9,14 +9,22 @@ import ButtonModal from "../../../buttonModal";
 import { querySelectedData, ellipseString } from "../../utils";
 import "./index.css";
 
-export const RankView = ({ data }: { data: SurveyComponentData }) => {
+export const RankView = ({ data, updateData }: SurveyCustomComponentProps) => {
   if (!data) {
     return <div>No data in Rank Component</div>;
   }
   const sorting = data.sorting || {};
   const limit = data.limit || 10;
+  const defaultRankList: SortingCard[] = [...Array(limit).keys()].map((i) => ({
+    id: '',
+    title: '',
+    description: '',
+    rank: i,
+    cardImage: '',
+    isAvailable: true,
+  }));
   const [binList, setBinList] = useState<SortingBinSelected[]>(data.binList || []);  
-  const [rankList, setRankList] = useState<SortingCard[]>(data.rankList || []);
+  const [rankList, setRankList] = useState<SortingCard[]>(data.rankList || defaultRankList);
 
   const renderBins = () => {
     return (
@@ -54,7 +62,7 @@ export const RankView = ({ data }: { data: SurveyComponentData }) => {
         renderItem={(item, ind: number) => (
           <List.Item>
             <div>
-              <Typography.Text mark>No. {ind}</Typography.Text>
+              <Typography.Text mark>No. {ind+1}</Typography.Text>
               <span className="sorting-card-item-title">{ellipseString(item.title, 5)}</span>
             </div>
           </List.Item>

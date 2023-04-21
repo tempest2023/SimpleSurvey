@@ -1,5 +1,5 @@
 import { Rule } from 'antd/lib/form';
-import { ComponentConfigProps, SurveyComponentData } from '../../type';
+import { SurveyCustomComponentProps, SurveyComponentData } from '../../type';
 
 export interface PageData extends SurveyComponentData {
   type: "page";
@@ -7,4 +7,4 @@ export interface PageData extends SurveyComponentData {
   description?: string;
 }
 
-export interface PageComponentConfigProps extends ComponentConfigProps {}
+export interface PageSurveyCustomComponentProps extends SurveyCustomComponentProps {}

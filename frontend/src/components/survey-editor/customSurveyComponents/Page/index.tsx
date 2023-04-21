@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../store/store";
 import { setSurveyJson } from "../../../../store/surveySlice";
 import { Divider, List, Button, Form, Input } from "antd";
-import { PageData, PageComponentConfigProps } from "./type";
+import { PageData, PageSurveyCustomComponentProps } from "./type";
 import { queryPageById } from "../../utils";
 import { SurveyComponentData, SurveyJson} from "../../type";
 import "./index.css";
@@ -24,7 +24,7 @@ export const PageView = ({ data }: { data: SurveyComponentData }) => {
 };
 
 // Config component for Page
-export function PageComponentConfig({ updateData }: PageComponentConfigProps) {
+export function PageComponentConfig({ updateData }: PageSurveyCustomComponentProps) {
   const dispatch = useDispatch<AppDispatch>();
   const handleSetSurveyJson = (surveyJson: SurveyJson) => {
     dispatch(setSurveyJson(surveyJson));

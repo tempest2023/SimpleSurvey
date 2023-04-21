@@ -2,9 +2,12 @@ import { TextInputData } from './customSurveyComponents/TextInput/type';
 import { SortingCardBinData } from './customSurveyComponents/Sorting/type';
 import { RankData } from './customSurveyComponents/Rank/type';
 // type of components config props
-export interface ComponentConfigProps {
+
+export type updateDataFn = (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+export interface SurveyCustomComponentProps {
   data?: SurveyComponentData;
-  updateData: (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+  updateData: updateDataFn;
+  toNextPage?: () => void;
 }
 
 // the data structure of a survey component, after instantiation the id will be generated

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../store/store";
+import { setSurveyJson } from "../../../../store/surveySlice";
 import {
   Divider,
   Button,
@@ -31,18 +32,20 @@ import {
   SortingCardProps,
 } from "./type";
 import { querySelectedData, ellipseString } from "../../utils";
-import { SurveyComponentData } from "../../type";
+import { SurveyCustomComponentProps } from "../../type";
 import ButtonModal from "../../../buttonModal";
 import "./index.css";
 
-export const SortingView = ({ data }: { data: SurveyComponentData }) => {
+export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomComponentProps) => {
   if (!data) {
     return <div>No data in Sorting Card</div>;
   }
   const [cardList, setCardList] = useState<SortingCard[]>(data.cardList || []);
   const [binList, setBinList] = useState<SortingBin[]>(data.binList || []);
+  // every time reset, clear sorting
   const [sorting, setSorting] = useState<{ [name: string]: SortingCard[] }>({});
   const [currentCardInd, setCurrentCardInd] = useState(0);
+  // update component data when editor state changes
   useEffect(()=>{
     if (!data) {
       return;
@@ -50,8 +53,9 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     data.cardList && setCardList(data.cardList);
     data.binList && setBinList(data.binList);
   }, [data])
-  const binCount = binList.length;
-  const cardCount = cardList.length;
+
+  // card count = cardList.length + all cards in sorting bins
+  const cardCount = cardList.length + Object.keys(sorting).map(key => sorting[key] && sorting[key].length).reduce((a, b) => a + b, 0);
 
   const moveCardToBin = (cardId: string, binId: string) => {
     // console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
@@ -87,7 +91,8 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     }
     let card = sorting[binId][index];
     sorting[binId].splice(index, 1);
-    setCardList([card, ...cardList]);
+    const tmpCardList = [...cardList, card];
+    setCardList(tmpCardList);
     setSorting({ ...sorting });
   };
 
@@ -111,7 +116,7 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     }) as MenuProps["items"];
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <AntCard id={`card_${id}`} size="default" hoverable>
+        <AntCard id={`card_${id}`} size="default" hoverable={!!id}>
           <div className="sorting-card-item-panel">
             <img
               className="sorting-card-image"
@@ -162,34 +167,26 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     );
   };
 
+  const onFinish = () => {
+    // save changes in this page and go to next page
+    updateData(data.id, { ...data, sorting }, false);
+    toNextPage && toNextPage();
+  }
+
   return (
     <div>
-      <span className="sorting-card-progress-bar-info">{`Cards: ${
-        cardCount > 0 ? currentCardInd + 1 : 0
-      }/${cardCount}`}</span>
+      <span className="sorting-card-progress-bar-info">{`Cards: ${cardCount - cardList.length}/${cardCount}`}</span>
       <Progress
         width={80}
-        percent={(currentCardInd / (cardCount === 0 ? 1 : cardCount)) * 100}
+        percent={((cardCount - cardList.length) / (cardCount === 0 ? 1 : cardCount)) * 100}
         showInfo={false}
       />
       {renderCard()}
       {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardInd+1 : 0}/${cardCount}`}</div> */}
       {renderBins()}
-      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        {/* <Button
-          disabled={currentCardInd === 0}
-          onClick={() => setCurrentCardInd(currentCardInd - 1)}
-        >
-          Previous
-        </Button>
-        <Button
-          disabled={currentCardInd === cardCount - 1}
-          onClick={() => setCurrentCardInd(currentCardInd + 1)}
-        >
-          Next
-        </Button> */}
-        {currentCardInd === cardCount - 1 && (
-          <Button type="primary">Continue</Button>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        {cardList.length === 0 && (
+          <Button type="primary" onClick={onFinish}>Continue</Button>
         )}
       </div>
     </div>

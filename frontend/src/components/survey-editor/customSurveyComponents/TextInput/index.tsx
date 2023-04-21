@@ -5,6 +5,7 @@ import { Form, Input } from "antd";
 import { Divider, List, Button } from "antd";
 import { TextInputData, TextInputConfigProps, TextInputProps } from "./type";
 import { querySelectedData } from "../../utils";
+import { updateDataFn } from '../../type';
 
 import './index.css'
 
@@ -37,7 +38,7 @@ export const TextInput: React.FC<TextInputProps> = ({
 };
 
 // View component for TextInput
-export const TextInputView = ({ data }: { data: TextInputData }) => {
+export const TextInputView = ({ data }: { data: TextInputData, updateData: updateDataFn }) => {
   console.log('text input data', data)
   if (!data) {
     return <div>No data in TextInput</div>;

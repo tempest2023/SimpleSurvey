@@ -1,5 +1,5 @@
 import { Rule } from 'antd/lib/form';
-import { ComponentConfigProps, SurveyComponentData } from '../../type';
+import { SurveyCustomComponentProps, SurveyComponentData } from '../../type';
 
 export type SortingCard = {
   id: string;
@@ -25,7 +25,7 @@ export interface SortingCardBinData extends SurveyComponentData {
   };
 }
 
-export interface SortingConfigProps extends ComponentConfigProps {
+export interface SortingConfigProps extends SurveyCustomComponentProps {
   data?: SortingCardBinData;
 }
 

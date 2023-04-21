@@ -71,7 +71,7 @@ export default function Designer() {
     //   return;
     // }
     // // console.log('[debug] generate config forms by selectedData:', config, tmpSelectedElementData);
-    // const tmpConfigForms: React.FC<ComponentConfigProps> = config;
+    // const tmpConfigForms: React.FC<SurveyCustomComponentProps> = config;
     // // update config forms and it will be rendered on the right panel
     // setConfigForms(tmpConfigForms);
   }, [editorState.selectedElementId, editorState.selectedPageId]);

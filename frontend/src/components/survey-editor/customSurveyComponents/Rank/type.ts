@@ -1,4 +1,4 @@
-import { ComponentConfigProps, SurveyComponentData } from '../../type';
+import { SurveyCustomComponentProps, SurveyComponentData } from '../../type';
 import { SortingCard, SortingBin } from '../Sorting/type';
 
 export interface SortingBinSelected extends SortingBin {
@@ -16,6 +16,6 @@ export interface RankData extends SurveyComponentData {
   limit: number;
 }
 
-export interface RankConfigProps extends ComponentConfigProps {
+export interface RankConfigProps extends SurveyCustomComponentProps {
   data?: RankData;
 }

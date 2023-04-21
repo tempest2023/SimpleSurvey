@@ -2,14 +2,14 @@ import type React from 'react';
 import { ComponentType } from 'react';
 import { SortingConfig } from '../customSurveyComponents/Sorting';
 import { TextInputConfig } from '../customSurveyComponents/TextInput';
-import { ComponentConfigProps, SurveyComponentData } from '../type';
+import { SurveyCustomComponentProps, SurveyComponentData } from '../type';
 
 // the common data type for all survey components
 export type SurveyComponentType = {
   id?: string;
   name: string;
   type: string;
-  config?: React.FC<ComponentConfigProps>;
+  config?: React.FC<SurveyCustomComponentProps>;
   view?: (props: any) => JSX.Element | null;
 }
 
@@ -30,7 +30,7 @@ export const surveyComponentData: SurveyComponentType[] = [
   {
     name: 'Sort Cards',
     type: 'sortcard',
-    config: SortingConfig as React.FC<ComponentConfigProps>,
+    config: SortingConfig as React.FC<SurveyCustomComponentProps>,
   },
   {
     name: 'Rank Cards',
@@ -39,7 +39,7 @@ export const surveyComponentData: SurveyComponentType[] = [
   {
     name: 'Text Input',
     type: 'text',
-    config: TextInputConfig as React.FC<ComponentConfigProps>,
+    config: TextInputConfig as React.FC<SurveyCustomComponentProps>,
   },
   {
     name: 'Radio Input',
