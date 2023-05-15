@@ -19,12 +19,13 @@ interface PreviewProps {
 }
 
 export default function Preview({ pageInd }: PreviewProps) {
-  const [activePage, setActivePage] = useState<string>(pageInd ? String(pageInd+1) : "1");
   const dispatch = useDispatch<AppDispatch>();
+  const setSelectedPageId = useSelector((state: RootState) => state.editor.selectedPageId);
   const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const handleSetSurveyJson = (surveyJson: SurveyJson) => {
     dispatch(setSurveyJson(surveyJson));
   };
+  const [activePage, setActivePage] = useState<string>(pageInd ? String(pageInd+1) : "1");
 
   const toNextPage = () => {
     setActivePage(String(Number(activePage) + 1));
@@ -119,7 +120,7 @@ export default function Preview({ pageInd }: PreviewProps) {
 
   const items: TabsProps['items'] = [];
   // generate tabs for each page
-  surveyJson.pages.forEach((page, index) => {
+  surveyJson.pages && surveyJson.pages.forEach((page: Page, index) => {
     items.push({
       key: `${index + 1}`,
       label: `Page ${index + 1}`,
@@ -138,7 +139,7 @@ export default function Preview({ pageInd }: PreviewProps) {
   return (
     <Layout className="preview-web-panel">
       <div className="container">
-        <Tabs tabPosition="bottom" defaultActiveKey="1" items={items} activeKey={activePage} onTabClick={(key)=>setActivePage(key)} />
+        <Tabs renderTabBar={(props)=>{return <></>}} tabPosition="bottom" defaultActiveKey="1" items={items} activeKey={activePage} onTabClick={(key)=>setActivePage(key)} />
       </div>
     </Layout>
   );

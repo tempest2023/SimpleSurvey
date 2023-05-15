@@ -32,7 +32,7 @@ import {
   getUserSessionsHandler,
   deleteSessionHandler,
 } from "./controller/session.controller";
-import { createUserHandler } from "./controller/user.controller";
+import { createUserHandler, getUsersHandler } from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
@@ -103,6 +103,8 @@ function routes(app: Express) {
    *        description: Bad request
    */
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
+
+  app.get("/api/users", requireUser, getUsersHandler);
 
   app.post(
     "/api/sessions",
@@ -421,6 +423,31 @@ function routes(app: Express) {
    *              $ref: '#/components/schema/Project'
    *       404:
    *         description: Project not found
+   *  delete:
+   *        tags:
+   *        - Project
+   *        summary: Delete a project
+   *        parameters:
+   *        - name: projectId
+   *          in: path
+   *          description: The id of the project
+   *          required: true
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *               $ref: '#/components/schema/UpdateProjectInput'
+   *        responses:
+   *          200:
+   *              description: Success
+   *              content:
+   *                application/json:
+   *                  schema:
+   *                    $ref: '#/components/schema/Project'
+   *          404:
+   *             description: Project not found
+   *           
    */
   app.put(
     "/api/projects/:projectId",

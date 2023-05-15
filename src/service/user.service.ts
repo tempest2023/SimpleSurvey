@@ -12,6 +12,16 @@ export async function createUser(input: UserInput) {
   }
 }
 
+export async function getUsers() {
+  try {
+    const users = await UserModel.find()
+    return users.map(user => omit(user.toJSON(), "password"));
+  } catch (e: any) {
+    throw new Error(e);
+  }
+}
+
+
 export async function validatePassword({
   email,
   password,

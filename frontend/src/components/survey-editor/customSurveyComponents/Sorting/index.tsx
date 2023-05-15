@@ -40,6 +40,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
   if (!data) {
     return <div>No data in Sorting Card</div>;
   }
+  const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const [cardList, setCardList] = useState<SortingCard[]>(data.cardList || []);
   const [binList, setBinList] = useState<SortingBin[]>(data.binList || []);
   // every time reset, clear sorting
@@ -124,7 +125,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
               src={cardImage}
             />
             <div className="sorting-card-item-info">
-              <span className="sorting-card-item-title">{title}</span>
+              <span className="sorting-card-item-title">{title || 'All Competed'}</span>
               <span className="sorting-card-item-desc">{description}</span>
               <Divider />
               <Dropdown
@@ -170,6 +171,24 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
   const onFinish = () => {
     // save changes in this page and go to next page
     updateData(data.id, { ...data, sorting }, false);
+    // set sorting data to next page's rank component dynamically
+    for(let i=0;i<surveyJson.pages.length;i++) {
+      const page = surveyJson.pages[i];
+      page.elements?.forEach((element) => {
+        if(element.id === data.id) {
+          // set the sorting data for the next page rank element
+          const targetPage = surveyJson.pages[i+1];
+          console.log('debug', targetPage)
+          if(targetPage) {
+            const targetElement = targetPage.elements?.find((element) => element.type === 'rank');
+            console.log('debug', targetElement);
+            if(targetElement) {
+              updateData(targetElement.id, {...targetElement.data, sorting}, false)
+            }
+          }
+        }
+      })
+    }
     toNextPage && toNextPage();
   }
 
@@ -184,7 +203,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
       {renderCard()}
       {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardInd+1 : 0}/${cardCount}`}</div> */}
       {renderBins()}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div className="page-footer">
         {cardList.length === 0 && (
           <Button type="primary" onClick={onFinish}>Continue</Button>
         )}
@@ -388,10 +407,17 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
         </Form.Item>
         <Form.Item
           name="description"
-          label="Description"
+          label="Short Description"
           rules={[{ required: true }]}
         >
-          <Input placeholder="Enter card description" />
+          <Input placeholder="Enter short description of card" />
+        </Form.Item>
+        <Form.Item
+          name="fullDescription"
+          label="Full Description"
+          rules={[{ required: true }]}
+        >
+          <Input placeholder="Enter the full description of card" />
         </Form.Item>
         <Form.Item name="cardImage" label="Image">
           <Input placeholder="Enter card image url" />
@@ -422,10 +448,17 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
       </Form.Item>
       <Form.Item
         name="description"
-        label="Description"
+        label="Short Description"
         rules={[{ required: true }]}
       >
-        <Input placeholder="Enter card description" />
+        <Input placeholder="Enter the short description of card" />
+      </Form.Item>
+      <Form.Item
+        name="fullDescription"
+        label="Full Description"
+        rules={[{ required: true }]}
+      >
+        <Input placeholder="Enter the full description of card" />
       </Form.Item>
       <Form.Item name="cardImage" label="Image">
         <Input placeholder="Enter card image url" />
@@ -464,7 +497,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
       ellipsis: true,
     },
     {
-      title: "Description",
+      title: "Short Description",
       dataIndex: "description",
       key: "description",
       width: "25%",

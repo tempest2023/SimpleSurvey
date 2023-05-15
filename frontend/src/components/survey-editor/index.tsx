@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import Designer from "./designer";
 import Preview from "./preview";
-import LogicPanel from './logicPanel';
+import Publish from './publish';
 import JsonPanel from './jsonPanel';
 import "./index.css";
 
@@ -33,6 +33,11 @@ function SurveyEditor() {
       label: `JSON`,
       children: <JsonPanel />,
     },
+    {
+      key: '5',
+      label: `Publish`,
+      children: <Publish />
+    }
   ];
   const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => (
     <DefaultTabBar {...props} className="survey-tabbar" />

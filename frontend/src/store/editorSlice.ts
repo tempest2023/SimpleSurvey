@@ -31,10 +31,10 @@ const editorSlice = createSlice({
       state.configForms = action.payload;
     },
     setEditorState: (state, action: PayloadAction<Partial<EditorState>>) => {
-      state.selectedElementData = action.payload.selectedElementData || state.selectedElementData;
-      state.selectedElementId = action.payload.selectedElementId || state.selectedElementId;
-      state.selectedPageId = action.payload.selectedPageId || state.selectedPageId;
-      state.configForms = action.payload.configForms || state.configForms
+      state.selectedElementData = action.payload.selectedElementData || null;
+      state.selectedElementId = action.payload.selectedElementId || null;
+      state.selectedPageId = action.payload.selectedPageId || null;
+      state.configForms = action.payload.configForms || null;
     }
   },
 });

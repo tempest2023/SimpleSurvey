@@ -23,7 +23,7 @@ export async function createProjectHandler(
   try {
     const project = await createProject({ ...body, admin: userId });
     return res.send(project);
-  } catch (e) {
+  } catch (e:any) {
     console.log('[debug][project.controller.ts] create a new project, error: ', e);
     if(e.message === "Survey does not exist") {
       return res.send({

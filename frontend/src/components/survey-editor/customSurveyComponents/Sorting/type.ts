@@ -5,6 +5,7 @@ export type SortingCard = {
   id: string;
   title: string;
   description: string;
+  fullDescription: string;
   rank: number,
   cardImage: string; // base64 encoded string
   isAvailable: boolean;

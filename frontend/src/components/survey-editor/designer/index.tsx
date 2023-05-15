@@ -4,7 +4,7 @@ import { Layout, List, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
-import { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
+import editorSlice, { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
 import { PlusCircleOutlined, BookOutlined } from "@ant-design/icons";
 import { surveyComponentData } from "./surveyComponentData";
 import { TextInputConfig } from "../customSurveyComponents/TextInput";
@@ -142,8 +142,10 @@ export default function Designer() {
     }
     // if there is no element in this page, set selectedElementId to null
     if (!page.elements || page.elements.length === 0) {
+      // console.log("[debug] [designer/index.tsx] no element in this page");
       updatePartialEditorState({
         selectedElementId: null,
+        selectedElementData: null,
         selectedPageId: pageid,
       });
       return;
@@ -226,7 +228,7 @@ export default function Designer() {
           }
           dataSource={surveyJson?.pages || []}
           renderItem={(item) => (
-            <List.Item>
+            <List.Item style={{ padding: 0 }} className={editorState.selectedPageId === item.id ? "active-menu" : ""}>
               <Button
                 onClick={()=>onSelectPage(item.id)}
                 className="menu-item-button"
@@ -235,7 +237,7 @@ export default function Designer() {
                 size="large"
                 icon={<BookOutlined />}
               >
-                {item.title}
+                {item.title || 'Untitled Page'}
               </Button>
             </List.Item>
           )}
@@ -249,13 +251,13 @@ export default function Designer() {
           </List.Item>)} 
         /> */}
       </div>
-      <div className="preview-panel">
+      {/* <div className="preview-panel">
           {surveyJson && <Preview />}
           {!surveyJson &&
           <Button type="default" size="large" icon={<PlusCircleOutlined />}>
             Add Components
           </Button>}
-      </div>
+      </div> */}
       <div className="config-panel">
         <div className="configForm">
           {/* {ConfigForms && selectedElementData && <ConfigForms data={selectedElementData} updateData={upadteSurveyJson} />} */}

@@ -1,4 +1,3 @@
-import { Rule } from 'antd/lib/form';
 import { SurveyCustomComponentProps, SurveyComponentData } from '../../type';
 
 export interface PageData extends SurveyComponentData {

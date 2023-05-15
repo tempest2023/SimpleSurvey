@@ -1,7 +1,7 @@
 .sorting-card-progress-bar-info {
   position: relative;
   font-size: 1rem;
-  color: #ccc;
+  color: #000;
   display: block;
 }
 
@@ -75,7 +75,8 @@
 }
 
 .sorting-bin-box {
-  width: 200px;
+  width: 100%;
+  min-width: 200px;
   height: auto;
   min-height: 150px;
   display: flex;
@@ -95,6 +96,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  margin: 0.5rem;
 }
 
 .sorting-bin-outter span {
