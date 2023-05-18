@@ -1,10 +1,11 @@
 import type React from "react";
-import { useEffect, useState, ComponentType } from "react";
-import { Layout, List, Button } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Layout, List, Button, notification } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
 import editorSlice, { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
+import { updateSurveyById } from '../../../requests';
 import { PlusCircleOutlined, BookOutlined } from "@ant-design/icons";
 import { surveyComponentData } from "./surveyComponentData";
 import { TextInputConfig } from "../customSurveyComponents/TextInput";
@@ -25,6 +26,7 @@ export default function Designer() {
   const dispatch = useDispatch<AppDispatch>();
   const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const editorState = useSelector((state: RootState) => state.editor);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timer | null>(null);
   // update surveyJson to store
   const handleSetSurveyJson = (surveyJson: SurveyJson) => {
     dispatch(setSurveyJson(surveyJson));
@@ -75,6 +77,53 @@ export default function Designer() {
     // // update config forms and it will be rendered on the right panel
     // setConfigForms(tmpConfigForms);
   }, [editorState.selectedElementId, editorState.selectedPageId]);
+
+  useEffect(() => {
+    // set a timer for auto save
+    const autoSaveHandler = async () => {
+      const surveyJson = JSON.parse(localStorage.getItem('surveyJson')|| '{}');
+      console.log(`[debug] auto save: ${surveyJson._surveyId}, ${surveyJson.surveyName}`);
+      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
+      if(!res) {
+        console.log('[error] [designer/index.tsx] auto save failed', res);
+        notification.error({
+          message: 'Auto save failed',
+          description: 'Please check your network and try again.',
+          duration: 3,
+        });
+      }
+    }
+    if (!autoSaveTimer) {
+      const timer = setInterval(autoSaveHandler, 50000);
+      setAutoSaveTimer(timer);
+    }
+    return () => {
+      if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
+      }
+    }
+  }, [])
+
+  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+    if (event.metaKey && event.key === 's') {
+      event.preventDefault();
+      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
+      if(res && res.surveyId) {
+        notification.success({
+          message: 'Auto save success',
+          description: 'Survey has been saved.',
+          duration: 3,
+        });
+      }
+    }
+  }, [updateSurveyById]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   // add a new component to surveyJson
   const addComponent = (componentType: string) => () => {

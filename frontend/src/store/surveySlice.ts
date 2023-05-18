@@ -16,6 +16,7 @@ const surveySlice = createSlice({
   reducers: {
     setSurveyJson: (state, action: PayloadAction<SurveyJson>) => {
       state.surveyJson = action.payload;
+      localStorage.setItem("surveyJson", JSON.stringify(state.surveyJson));
     },
   },
 });

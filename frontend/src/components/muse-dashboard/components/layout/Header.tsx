@@ -16,7 +16,7 @@ import {
   Typography,
   Switch,
 } from "antd";
-import { getUserInfo } from "../../requests";
+import { getUserInfo } from "../../../../requests";
 
 import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";

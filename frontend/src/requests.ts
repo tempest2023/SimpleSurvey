@@ -1,5 +1,17 @@
 import { notification } from "antd";
-import { API_URL } from "../../constants";
+import { API_URL } from "./constants";
+
+const resHandler = (res: any) => {
+  if (res.status === 401) {
+    location.href = "/sign-in";
+  }
+  if (res.status === 404) {
+    return {
+      json: () => null,
+    }
+  }
+  return res;
+}
 
 export const login = async (email: string, password: string) => {
   try {
@@ -61,12 +73,7 @@ export const getProjects = async() => {
       "Authorization": `Bearer ${accessToken}`,
       "x-refresh": `${refreshToken}`,
     }
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  }).then((res) => res.json());
+  }).then(resHandler).then((res) => res.json());
 }
 
 export const createProject = async (name: string, description: string) => {
@@ -85,12 +92,7 @@ export const createProject = async (name: string, description: string) => {
       description,
       users: [],
     }),
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  }).then((res) => res.json());
+  }).then(resHandler).then((res) => res.json());
 }
 
 export const duplicateProject = async(project: any) => {
@@ -105,12 +107,7 @@ export const duplicateProject = async(project: any) => {
       "x-refresh": `${refreshToken}`,
     },
     body: JSON.stringify(project),
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  }).then((res) => res.json());
+  }).then(resHandler).then((res) => res.json());
 }
 
 export const deleteProject = async (_id: string) => {
@@ -124,12 +121,7 @@ export const deleteProject = async (_id: string) => {
       "Authorization": `Bearer ${accessToken}`,
       "x-refresh": `${refreshToken}`,
     },
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  })
+  }).then(resHandler)
 }
 
 export const updateProject = async (_id: string, name: string, description: string) => {
@@ -147,10 +139,37 @@ export const updateProject = async (_id: string, name: string, description: stri
       name,
       description,
     }),
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  }).then((res) => res.json());
+  }).then(resHandler).then((res) => res.json());
+}
+
+export const getSurveyBySurveyId = async (surveyId: string) => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+  return fetch(`${API_URL}/api/surveys/${surveyId}`, {
+    method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`,
+      "x-refresh": `${refreshToken}`,
+    },
+  }).then(resHandler).then((res) => res.json());
+}
+
+export const updateSurveyById = async (surveyId: string, title: string, content: object) => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+  return fetch(`${API_URL}/api/surveys/${surveyId}`, {
+    method: "PUT",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`,
+      "x-refresh": `${refreshToken}`,
+    },
+    body: JSON.stringify({
+      title,
+      content,
+    }),
+  }).then(resHandler).then((res) => res.json());
 }

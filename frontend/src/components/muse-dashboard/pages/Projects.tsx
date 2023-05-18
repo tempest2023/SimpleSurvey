@@ -27,28 +27,14 @@ import ButtonModal from "../../buttonModal";
 
 import { Link } from "react-router-dom";
 
-import { getProjects, deleteProject, createProject, duplicateProject, updateProject } from "../requests";
-import { dateOption } from "../../../constants";
+import {
+  getProjects,
+  deleteProject,
+  createProject,
+  duplicateProject,
+  updateProject,
+} from "../../../requests";
 
-const { Title } = Typography;
-
-const formProps = {
-  name: "file",
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  headers: {
-    authorization: "authorization-text",
-  },
-  onChange(info: any) {
-    if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
 
 function Projects() {
   const [projects, setProjects] = useState<object[]>([]);
@@ -56,26 +42,31 @@ function Projects() {
   useEffect(() => {
     async function initProjectData() {
       const data = await getProjects();
-      setProjects(data);
+      if(data && data.length > 0){
+        setProjects(data);
+      }
     }
     initProjectData();
   }, []);
-  const onAddProject = () => {};
   const onFinishEditProject = async (values: any) => {
     const project = {
       ...values,
     };
-    const res = await updateProject(project._id, project.name, project.description);
+    const res = await updateProject(
+      project._id,
+      project.name,
+      project.description
+    );
     // console.log('[log] update project', res);
     if (!res || !res._id) {
       notification.error({
         message: "Update project failed: " + res.message,
-      })
+      });
       return;
     }
     notification.success({
       message: "Update project success",
-    })
+    });
     const tmp = projects.filter((item: any) => item._id !== project._id);
     tmp.push(res);
     setProjects([...tmp]);
@@ -89,51 +80,56 @@ function Projects() {
     if (!res || !res._id) {
       notification.error({
         message: "Create project failed: " + res.message,
-      })
+      });
       return;
     }
     notification.success({
       message: "Create project success",
-    })
-    projects.push(res);
-    setProjects([...projects]);
+    });
+    console.log("[log] create project", projects)
+    const tmp = [...projects];
+    tmp.push(res);
+    setProjects([...tmp]);
   };
   const confirmDeleteProject = async (projectId: string) => {
     const res = await deleteProject(projectId);
-    if(!res || res.status !== 200) {
+    if (!res || res.status !== 200) {
       notification.error({
         message: "Delete project failed",
-      })
+      });
       return;
     }
     notification.success({
       message: "Delete project success",
-    })
+    });
     const tmp = projects.filter((item: any) => item._id !== projectId);
     setProjects([...tmp]);
   };
   const confirmCopyProject = async (projectId: string) => {
-    let tmpProject: any = {...projects.filter((item: any) => item._id === projectId)[0]};
+    let tmpProject: any = {
+      ...projects.filter((item: any) => item._id === projectId)[0],
+    };
     tmpProject._id = null;
     tmpProject.admin = tmpProject.admin._id;
     tmpProject.survey = tmpProject.survey.surveyId;
     tmpProject.createdAt = null;
     tmpProject.updatedAt = null;
-    tmpProject.name = tmpProject.name + ' (copy)';
+    tmpProject.name = tmpProject.name + " (copy)";
     const res = await duplicateProject(tmpProject);
-    console.log('[log] duplicate project', res)
-    if(!res || !res._id) {
+    console.log("[log] duplicate project", res);
+    if (!res || !res._id) {
       notification.error({
         message: "Duplicate project failed",
-      })
+      });
       return;
     }
     notification.success({
       message: "Duplicate project success",
-    })
-    projects.push(res);
-    setProjects([...projects]);
-  }
+    });
+    const tmp = [...projects];
+    tmp.push(res);
+    setProjects([...tmp]);
+  };
   const ProjectEditForm = ({ project }: { project: any }) => {
     const [projectEditForm] = Form.useForm();
     useEffect(() => {
@@ -160,7 +156,9 @@ function Projects() {
           <Input placeholder="Enter description of this project" />
         </Form.Item>
         <Form.Item>
-          <span>For more editting, delete this project and create new one.</span>
+          <span>
+            For more editting, delete this project and create new one.
+          </span>
         </Form.Item>
         <Form.Item className="flex-center">
           <Button type="primary" htmlType="submit">
@@ -215,7 +213,7 @@ function Projects() {
       dataIndex: "survey",
       render: (survey: any) => (
         <Popover content="Click to enter the survey editor">
-          <Link to={`/editor?surveId=${survey.surveyId}`}>
+          <Link to={`/editor?surveyId=${survey.surveyId}`}>
             <span>{survey.title}</span>
           </Link>
         </Popover>
@@ -226,12 +224,10 @@ function Projects() {
       key: "admin",
       dataIndex: "admin",
       render: (user: any) => (
-        <>
-          <p>
-            {user.name}
-            <br /> {user.email}
-          </p>
-        </>
+        <p>
+          {user.name}
+          <br /> {user.email}
+        </p>
       ),
     },
     {
@@ -245,7 +241,7 @@ function Projects() {
       key: "createdDate",
       dataIndex: "createdAt",
       render: (date: string) => (
-        <>{new Date(date).toLocaleDateString("en-US")}</>
+        <span>{new Date(date).toLocaleDateString("en-US")}</span>
       ),
     },
     {
@@ -253,7 +249,7 @@ function Projects() {
       key: "updatedDate",
       dataIndex: "updatedAt",
       render: (date: string) => (
-        <>{new Date(date).toLocaleDateString("en-US")}</>
+        <span>{new Date(date).toLocaleDateString("en-US")}</span>
       ),
     },
     {
@@ -310,8 +306,7 @@ function Projects() {
                 <ButtonModal
                   buttonText={
                     <div className="flex-center">
-                      <PlusCircleOutlined /> &nbsp;
-                      Create Project
+                      <PlusCircleOutlined /> &nbsp; Create Project
                     </div>
                   }
                   modalTitle="Create Project"

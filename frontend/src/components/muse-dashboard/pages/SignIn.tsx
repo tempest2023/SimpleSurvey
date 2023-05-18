@@ -15,7 +15,7 @@ import {
   notification,
 } from "antd";
 import signinbg from "../assets/images/img-signin.jpg";
-import { login } from '../requests';
+import { login } from '../../../requests';
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 const template = [
