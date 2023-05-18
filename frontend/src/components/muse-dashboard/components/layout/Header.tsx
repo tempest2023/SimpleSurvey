@@ -16,13 +16,7 @@ import {
   Typography,
   Switch,
 } from "antd";
-
-import {
-  SearchOutlined,
-  StarOutlined,
-  TwitterOutlined,
-  FacebookFilled,
-} from "@ant-design/icons";
+import { getUserInfo } from "../../requests";
 
 import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
@@ -260,6 +254,24 @@ function Header({
 
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
+  const [userInfo, setUserInfo] = useState<any>(null);
+  useEffect(() => {
+    // authorization
+    async function authorization(){
+      let userInfo = localStorage.getItem('simple_survey_userinfo')
+      if(!userInfo) {
+        userInfo = await getUserInfo();
+        console.log('[getUserInfo]', userInfo)
+        if(userInfo) {
+          localStorage.setItem('simple_survey_userinfo', JSON.stringify(userInfo));
+        }  
+      } else {
+        userInfo = JSON.parse(userInfo);
+      }
+      setUserInfo(userInfo)
+    }
+    authorization();
+  }, [])
 
   useEffect(() => window.scrollTo(0, 0));
 
@@ -291,7 +303,7 @@ function Header({
           </div>
         </Col>
         <Col span={24} md={18} className="header-control">
-          <Badge size="small" count={4}>
+          {/* <Badge size="small" count={4}>
             <Dropdown menu={{ items }} dropdownRender={(menu: any) => (
               <List.Item>
                 <List.Item.Meta
@@ -309,8 +321,8 @@ function Header({
                 {bell}
               </a>
             </Dropdown>
-          </Badge>
-          <Button type="link" onClick={showDrawer}>
+          </Badge> */}
+          {/* <Button type="link" onClick={showDrawer}>
             {logsetting}
           </Button>
           <Button
@@ -419,16 +431,16 @@ function Header({
                 </div>
               </div>
             </div>
-          </Drawer>
-          <Link to="/sign-in" className="btn-sign-in">
+          </Drawer> */}
+          <div>
             {profile}
-            <span>Sign in</span>
-          </Link>
-          <Input
+            {userInfo && <span>{userInfo?.name || ''}</span>}
+          </div>
+          {/* <Input
             className="header-search"
             placeholder="Type here..."
             prefix={<SearchOutlined />}
-          />
+          /> */}
         </Col>
       </Row>
     </>

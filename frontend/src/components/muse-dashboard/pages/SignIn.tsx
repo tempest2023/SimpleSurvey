@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { API_URL } from '../../../constants';
+import { API_URL } from "../../../constants";
 import {
   Layout,
   Menu,
@@ -11,17 +11,11 @@ import {
   Form,
   Input,
   Switch,
+  Modal,
+  notification,
 } from "antd";
 import signinbg from "../assets/images/img-signin.jpg";
-import {
-  DribbbleOutlined,
-  TwitterOutlined,
-  InstagramOutlined,
-  GithubOutlined,
-} from "@ant-design/icons";
-function onChange(checked: boolean) {
-  console.log(`switch to ${checked}`);
-}
+import { login } from '../requests';
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 const template = [
@@ -107,16 +101,20 @@ const signin = [
 export default class SignIn extends Component {
   render() {
     const onFinish = async (values: any) => {
-      await fetch(`${API_URL}/api/sessions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password
-        })
+      const res = await login(values.email, values.password);
+      if(!res) {
+        return;
+      }
+      const { refreshToken, accessToken } = res;
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("accessToken", accessToken);
+      notification.success({
+        message: "Login success",
       });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+    
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -170,14 +168,14 @@ export default class SignIn extends Component {
                     <Input placeholder="Password" />
                   </Form.Item>
 
-                  <Form.Item
+                  {/* <Form.Item
                     name="remember"
                     className="aligin-center"
                     valuePropName="checked"
                   >
                     <Switch defaultChecked onChange={onChange} />
                     Remember me
-                  </Form.Item>
+                  </Form.Item> */}
 
                   <Form.Item>
                     <Button
@@ -189,8 +187,7 @@ export default class SignIn extends Component {
                     </Button>
                   </Form.Item>
                   <p className="font-semibold text-muted">
-                    Don't have an account?{" "}
-                    Contact Admin
+                    Don't have an account? Contact Admin
                   </p>
                 </Form>
               </Col>

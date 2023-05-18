@@ -327,7 +327,7 @@ body {
 .layout-dashboard .ant-layout-sider.sider-primary .footer-box button {
   margin: 0;
 }
-.ant-btn-sm,
+/* .ant-btn-sm,
 .ant-radio-group-small .ant-radio-button-wrapper {
   height: 34px;
   font-size: 12px;
@@ -349,7 +349,7 @@ body {
 .ant-btn,
 .ant-radio-group .ant-radio-button-wrapper {
   font-weight: 600;
-}
+} */
 
 .layout-dashboard .ant-layout-sider.sider-primary .aside-footer {
   padding-top: 100px;
@@ -503,18 +503,18 @@ h4 {
   line-height: 22px;
 }
 
-.layout-dashboard .header-control .ant-btn-link {
+/* .layout-dashboard .header-control .ant-btn-link {
   height: auto;
   padding: 0 7px;
   margin: 0;
   box-shadow: none;
   color: #8c8c8c;
   line-height: normal;
-}
+} */
 
-.ant-btn svg {
+/* .ant-btn svg {
   margin-right: 5px;
-}
+} */
 .layout-dashboard .header-control svg {
   width: 20px;
   height: 20px;
@@ -594,14 +594,14 @@ h6 {
   margin: 0px;
 }
 
-.layout-dashboard
+/* .layout-dashboard
   .header-control
   .header-search
   .ant-input-suffix
   .ant-input-search-icon.anticon-loading,
 .layout-dashboard .header-control .sidebar-toggler {
   display: block;
-}
+} */
 .layout-dashboard .header-control .btn-sign-in span {
   font-weight: 600;
   vertical-align: middle;
@@ -827,15 +827,15 @@ ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light.left-nav
   padding-bottom: 15px;
 }
 
-.rightside-top span.ant-input-affix-wrapper {
+/* .rightside-top span.ant-input-affix-wrapper {
   border-radius: 4px;
-}
+} */
 
-.rightside-top span.ant-input-affix-wrapper span.ant-input-prefix {
+/* .rightside-top span.ant-input-affix-wrapper span.ant-input-prefix {
   color: #c0c0c0;
-}
+} */
 
-.setting button.ant-btn {
+/* .setting button.ant-btn {
   padding: 0px;
   line-height: normal;
   background: transparent;
@@ -862,10 +862,10 @@ button.ant-btn.bell strong {
   line-height: normal;
   font-weight: normal;
   color: #fff;
-}
-.ant-dropdown-menu.ant-dropdown-menu-split.list-notifaction {
+} */
+/* .ant-dropdown-menu.ant-dropdown-menu-split.list-notifaction {
   width: 336px;
-}
+} */
 
 .list-notifaction ul {
   padding: 5px 10px;
@@ -1303,9 +1303,9 @@ span.ismobile {
   .ant-filtertabs {
     text-align: right;
   }
-  .rightside-top span.ant-input-affix-wrapper {
+  /* .rightside-top span.ant-input-affix-wrapper {
     width: 200px;
-  }
+  } */
 
   .rightside-top {
     justify-content: flex-end;
@@ -1468,9 +1468,9 @@ span.ismobile {
 ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light.left-nav li:active {
   background: transparent;
 }
-.rightside-top .ant-input {
+/* .rightside-top .ant-input {
   height: 30px;
-}
+} */
 .aside-footer {
   padding-top: 100px;
 }
@@ -1882,7 +1882,7 @@ body {
 .text-muted {
   color: #8c8c8c;
 }
-.ant-input {
+/* .ant-input {
   border-radius: 6px;
 }
 .ant-input {
@@ -1892,25 +1892,25 @@ body {
 .ant-input {
   height: 40px;
   border: 1px solid #d9d9d9;
-}
+} */
 .font-bold {
   font-weight: 700;
 }
 .text-dark {
   color: #141414;
 }
-.ant-btn,
+/* .ant-btn,
 .ant-radio-group .ant-radio-button-wrapper {
   font-weight: 600;
   font-size: 12px;
   height: 40px;
   padding: 0 15px;
   line-height: 40px;
-}
-.ant-btn {
+} */
+/* .ant-btn {
   box-shadow: 0 2px 4px rgb(0 0 0 / 7%);
   border-radius: 6px;
-}
+} */
 .layout-sign-up .ant-layout-footer {
   padding: 24px 50px;
 }
@@ -2177,7 +2177,7 @@ body {
   margin-right: 5px;
 }
 
-button.ant-btn.bell strong {
+/* button.ant-btn.bell strong {
   position: absolute;
   top: -1px;
   right: -9px;
@@ -2190,7 +2190,7 @@ button.ant-btn.bell strong {
   line-height: normal;
   font-weight: normal;
   color: #fff;
-}
+} */
 /* old css end */
 
 .layout-dashboard .ant-layout-footer {
@@ -2215,9 +2215,9 @@ button.ant-btn.bell strong {
   color: #141414;
 }
 
-.layout-dashboard .header-control .header-search input.ant-input {
+/* .layout-dashboard .header-control .header-search input.ant-input {
   height: auto;
-}
+} */
 
 small.redtext {
   color: red;
@@ -2363,7 +2363,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
   margin-right: -20px;
 }
 
-.ant-btn.ant-btn-link.ant-edit-link {
+/* .ant-btn.ant-btn-link.ant-edit-link {
   font-weight: 600;
   font-size: 12px;
   height: 40px;
@@ -2376,7 +2376,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
 }
 .payment-method-card.ant-card .ant-btn {
   margin-right: -20px;
-}
+} */
 
 .fill-gray-7 {
   fill: #8c8c8c !important;
@@ -2391,9 +2391,9 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
   margin: 0px;
 }
 
-.ant-card.ant-card-bordered.payment-method-card .ant-card-body {
+/* .ant-card.ant-card-bordered.payment-method-card .ant-card-body {
   padding-top: 16px;
-}
+} */
 
 .header-solid .ant-card-head {
   border-bottom: 0;
@@ -2420,7 +2420,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
   color: #8c8c8c;
 }
 
-.invoice-list .ant-list-item-action .ant-btn,
+/* .invoice-list .ant-list-item-action .ant-btn,
 .transactions-list .ant-list-item-action .ant-btn {
   font-weight: 600;
   color: #141414;
@@ -2430,7 +2430,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
 .ant-btn > svg,
 .ant-btn > svg + span {
   vertical-align: middle;
-}
+} */
 .invoice-list .amount,
 .transactions-list .amount {
   font-size: 14px;
@@ -3007,11 +3007,11 @@ button.ant-btn.ant-btn-dashed.ant-full-box svg {
   border-color: #096dd9;
 }
 
-section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
+/* section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   .header-control
   span.ant-input-affix-wrapper.header-search
   .anticon-search
   svg
   path {
   fill: #8c8c8c;
-}
+} */
