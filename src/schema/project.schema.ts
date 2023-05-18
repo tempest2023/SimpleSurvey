@@ -71,11 +71,11 @@ const payload = {
   body: object({
     name: string({
       required_error: "name userid is required",
-    }).min(4, "name must be at least 4 characters long"),
+    }),
     description: string({
       required_error: "description is required",
-    }).min(6, "description must be at least 4 characters long"),
-    users: optional(array(string()).min(0, "There must be at least 1 user in users")),
+    }),
+    users: optional(array(string())),
     survey: optional(string()),
   }),
 };
