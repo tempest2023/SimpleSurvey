@@ -44,6 +44,12 @@ export const createSortRankSurveyJson = (): SurveyJson => {
           name: "rank",
         }
       ]
+    }, 
+    {
+      id: nanoid(),
+      title: "",
+      description: "You have finished the survey!",
+      elements: []
     }
   ]
   return {
@@ -51,6 +57,16 @@ export const createSortRankSurveyJson = (): SurveyJson => {
     surveyName: "ASSIST Functional Performance Index",
     pages,
   }
+}
+
+export const loadSurveyJsonFromLocalStorage = (): SurveyJson | null => {
+  const data = localStorage.getItem("surveyJson") || "";
+  try{
+    return JSON.parse(data);
+  } catch (e) {
+    console.log(`[error] [survey-editor/utils:loadSurveyJsonFromLocalStorage] ${e}`);
+  }
+  return null;
 }
 
 // iterate surveyJson to find selected element
@@ -89,4 +105,11 @@ export const queryPageById = (data: SurveyJson | null, pageId: string | null): P
   }
   );
   return res;
+}
+
+export const ellipseString = (str: string, length: number): string => {
+  if (str.length > length) {
+    return str.slice(0, length) + '...';
+  }
+  return str;
 }

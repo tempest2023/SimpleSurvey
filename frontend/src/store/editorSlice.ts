@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Page, SurveyComponentData, ComponentConfigProps } from '../components/survey-editor/type';
+import { Page, SurveyComponentData, SurveyCustomComponentProps } from '../components/survey-editor/type';
 interface EditorState {
   selectedPageId: string|null,
   selectedElementId: string|null,
   selectedElementData: SurveyComponentData | null,
-  configForms: React.FC<ComponentConfigProps> | null
+  configForms: React.FC<SurveyCustomComponentProps> | null
 }
 
 const initialState: EditorState = {
@@ -27,14 +27,14 @@ const editorSlice = createSlice({
     setSelectedElementData: (state, action: PayloadAction<SurveyComponentData>) => {
       state.selectedElementData = action.payload;
     },
-    setConfigForms: (state, action: PayloadAction<React.FC<ComponentConfigProps>>) => {
+    setConfigForms: (state, action: PayloadAction<React.FC<SurveyCustomComponentProps>>) => {
       state.configForms = action.payload;
     },
     setEditorState: (state, action: PayloadAction<Partial<EditorState>>) => {
-      state.selectedElementData = action.payload.selectedElementData || state.selectedElementData;
-      state.selectedElementId = action.payload.selectedElementId || state.selectedElementId;
-      state.selectedPageId = action.payload.selectedPageId || state.selectedPageId;
-      state.configForms = action.payload.configForms || state.configForms
+      state.selectedElementData = action.payload.selectedElementData || null;
+      state.selectedElementId = action.payload.selectedElementId || null;
+      state.selectedPageId = action.payload.selectedPageId || null;
+      state.configForms = action.payload.configForms || null;
     }
   },
 });

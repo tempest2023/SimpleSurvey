@@ -1,0 +1,7 @@
+.publish-form-container {
+  width: 80%;
+  height: calc(100vh - 50px);
+  display: block;
+  padding: 0;
+  margin: auto;
+}

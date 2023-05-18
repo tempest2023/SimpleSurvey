@@ -32,7 +32,7 @@ import {
   getUserSessionsHandler,
   deleteSessionHandler,
 } from "./controller/session.controller";
-import { createUserHandler } from "./controller/user.controller";
+import { createUserHandler, getUserInfoHandler, getUsersHandler } from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
@@ -103,6 +103,10 @@ function routes(app: Express) {
    *        description: Bad request
    */
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
+
+  app.get("/api/users", requireUser, getUsersHandler);
+
+  app.get("/api/users/me", requireUser, getUserInfoHandler);
 
   app.post(
     "/api/sessions",
@@ -421,22 +425,47 @@ function routes(app: Express) {
    *              $ref: '#/components/schema/Project'
    *       404:
    *         description: Project not found
+   *  delete:
+   *        tags:
+   *        - Project
+   *        summary: Delete a project
+   *        parameters:
+   *        - name: projectId
+   *          in: path
+   *          description: The id of the project
+   *          required: true
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *               $ref: '#/components/schema/UpdateProjectInput'
+   *        responses:
+   *          200:
+   *              description: Success
+   *              content:
+   *                application/json:
+   *                  schema:
+   *                    $ref: '#/components/schema/Project'
+   *          404:
+   *             description: Project not found
+   *           
    */
   app.put(
     "/api/projects/:projectId",
-    [requireUser, validateResource(updateProjectSchema)],
+    [requireUser],
     updateProjectHandler
   );
 
   app.get(
     "/api/projects/:projectId",
-    validateResource(getProjectSchema),
+    [requireUser, validateResource(getProjectSchema)],
     getProjectHandler
   );
 
   app.get(
     "/api/projects",
-    [requireUser],
+    requireUser,
     getProjectsByUserIdHandler
   )
 

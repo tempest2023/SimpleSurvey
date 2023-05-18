@@ -1,15 +1,17 @@
 import type React from "react";
-import { useEffect, useState, ComponentType } from "react";
-import { Layout, List, Button } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Layout, List, Button, notification } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
-import { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
+import editorSlice, { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
+import { updateSurveyById } from '../../../requests';
 import { PlusCircleOutlined, BookOutlined } from "@ant-design/icons";
 import { surveyComponentData } from "./surveyComponentData";
 import { TextInputConfig } from "../customSurveyComponents/TextInput";
 import { SortingConfig } from "../customSurveyComponents/Sorting";
 import { PageComponentConfig } from "../customSurveyComponents/Page";
+import { RankConfig } from "../customSurveyComponents/Rank";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
 import {
@@ -24,6 +26,7 @@ export default function Designer() {
   const dispatch = useDispatch<AppDispatch>();
   const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const editorState = useSelector((state: RootState) => state.editor);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timer | null>(null);
   // update surveyJson to store
   const handleSetSurveyJson = (surveyJson: SurveyJson) => {
     dispatch(setSurveyJson(surveyJson));
@@ -70,10 +73,57 @@ export default function Designer() {
     //   return;
     // }
     // // console.log('[debug] generate config forms by selectedData:', config, tmpSelectedElementData);
-    // const tmpConfigForms: React.FC<ComponentConfigProps> = config;
+    // const tmpConfigForms: React.FC<SurveyCustomComponentProps> = config;
     // // update config forms and it will be rendered on the right panel
     // setConfigForms(tmpConfigForms);
   }, [editorState.selectedElementId, editorState.selectedPageId]);
+
+  useEffect(() => {
+    // set a timer for auto save
+    const autoSaveHandler = async () => {
+      const surveyJson = JSON.parse(localStorage.getItem('surveyJson')|| '{}');
+      console.log(`[debug] auto save: ${surveyJson._surveyId}, ${surveyJson.surveyName}`);
+      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
+      if(!res) {
+        console.log('[error] [designer/index.tsx] auto save failed', res);
+        notification.error({
+          message: 'Auto save failed',
+          description: 'Please check your network and try again.',
+          duration: 3,
+        });
+      }
+    }
+    if (!autoSaveTimer) {
+      const timer = setInterval(autoSaveHandler, 50000);
+      setAutoSaveTimer(timer);
+    }
+    return () => {
+      if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
+      }
+    }
+  }, [])
+
+  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+    if (event.metaKey && event.key === 's') {
+      event.preventDefault();
+      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
+      if(res && res.surveyId) {
+        notification.success({
+          message: 'Auto save success',
+          description: 'Survey has been saved.',
+          duration: 3,
+        });
+      }
+    }
+  }, [updateSurveyById]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   // add a new component to surveyJson
   const addComponent = (componentType: string) => () => {
@@ -141,8 +191,10 @@ export default function Designer() {
     }
     // if there is no element in this page, set selectedElementId to null
     if (!page.elements || page.elements.length === 0) {
+      // console.log("[debug] [designer/index.tsx] no element in this page");
       updatePartialEditorState({
         selectedElementId: null,
+        selectedElementData: null,
         selectedPageId: pageid,
       });
       return;
@@ -206,6 +258,8 @@ export default function Designer() {
       return;
     }
     handleSetSurveyJson(tmpSurveyJson);
+    // save to local storage
+    localStorage.setItem("surveyJson", JSON.stringify(tmpSurveyJson));
   };
 
   // console.log('[debug] [designer/index.tsx] surveyJson:', surveyJson)
@@ -223,7 +277,7 @@ export default function Designer() {
           }
           dataSource={surveyJson?.pages || []}
           renderItem={(item) => (
-            <List.Item>
+            <List.Item style={{ padding: 0 }} className={editorState.selectedPageId === item.id ? "active-menu" : ""}>
               <Button
                 onClick={()=>onSelectPage(item.id)}
                 className="menu-item-button"
@@ -232,7 +286,7 @@ export default function Designer() {
                 size="large"
                 icon={<BookOutlined />}
               >
-                {item.title}
+                {item.title || 'Untitled Page'}
               </Button>
             </List.Item>
           )}
@@ -246,13 +300,13 @@ export default function Designer() {
           </List.Item>)} 
         /> */}
       </div>
-      <div className="preview-panel">
+      {/* <div className="preview-panel">
           {surveyJson && <Preview />}
           {!surveyJson &&
           <Button type="default" size="large" icon={<PlusCircleOutlined />}>
             Add Components
           </Button>}
-      </div>
+      </div> */}
       <div className="config-panel">
         <div className="configForm">
           {/* {ConfigForms && selectedElementData && <ConfigForms data={selectedElementData} updateData={upadteSurveyJson} />} */}
@@ -264,6 +318,9 @@ export default function Designer() {
           )}
           {editorState.selectedElementData && editorState.selectedElementData.type === "sortcard" && (
             <SortingConfig updateData={upadteSurveyJson} />
+          )}
+          {editorState.selectedElementData && editorState.selectedElementData.type === "rank" && (
+            <RankConfig updateData={upadteSurveyJson} />
           )}
         </div>
       </div>

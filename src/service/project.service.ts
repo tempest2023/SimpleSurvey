@@ -3,8 +3,8 @@ import ProjectModel, {
   ProjectDocument,
   ProjectInput,
 } from "../models/project.model";
+import { omit, result } from "lodash";
 import { databaseResponseTimeHistogram } from "../utils/metrics";
-import {findSurvey} from "./survey.service";
 
 export async function createProject(input: ProjectInput) {
   const metricsLabels = {
@@ -13,14 +13,10 @@ export async function createProject(input: ProjectInput) {
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    // check whether the survey exists
-    const survey = await findSurvey({ id: input.survey });
-    if (survey) {
-      throw new Error("Survey does not exist");
-    }
     const result = await ProjectModel.create(input);
+    const resWithPop = await (await result.populate('admin')).populate("survey");
     timer({ ...metricsLabels, success: "true" });
-    return result;
+    return omit(resWithPop.toJSON(), ['admin.password']);
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
     throw e;
@@ -37,9 +33,9 @@ export async function findProject(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ProjectModel.findOne(query, {}, options);
+    const result = await ProjectModel.findOne(query, {}, options).populate("survey").populate("admin");
     timer({ ...metricsLabels, success: "true" });
-    return result;
+    return omit(result, ['admin.password']);
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
 
@@ -57,9 +53,9 @@ export async function findProjects(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ProjectModel.find(query, {}, options);
+    const result = await ProjectModel.find(query, {}, options).populate("survey").populate("admin").populate('users');
     timer({ ...metricsLabels, success: "true" });
-    return result;
+    return result.map(project => omit(project, ['admin.password']))
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
 
@@ -72,7 +68,20 @@ export async function findAndUpdateProject(
   update: UpdateQuery<ProjectDocument>,
   options: QueryOptions
 ) {
-  return ProjectModel.findOneAndUpdate(query, update, options);
+  const metricsLabels = {
+    operation: "updateProject",
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const project = ProjectModel.findOneAndUpdate(query, update, options);
+    const result = await project.populate("survey").populate("admin");
+    timer({ ...metricsLabels, success: "true" });
+    return result;
+  } catch(e) {
+    timer({ ...metricsLabels, success: "false" });
+    throw e;
+  }
 }
 
 export async function deleteProject(query: FilterQuery<ProjectDocument>) {

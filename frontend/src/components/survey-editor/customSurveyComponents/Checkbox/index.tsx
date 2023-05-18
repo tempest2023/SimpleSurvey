@@ -1,13 +1,13 @@
-import { ComponentConfigProps, SurveyComponentData } from "../../type";
+import { SurveyCustomComponentProps, SurveyComponentData, updateDataFn } from "../../type";
 
-export const CheckboxView = ({ data }: { data: SurveyComponentData }) => {
+export const CheckboxView = ({ data, updateData }: { data: SurveyComponentData, updateData: updateDataFn }) => {
   if (!data) {
     return <div>No data in Checkbox Component</div>;
   }
   return <></>;
 };
 
-export const CheckboxConfig = ({ data, updateData }: ComponentConfigProps) => {
+export const CheckboxConfig = ({ data, updateData }: SurveyCustomComponentProps) => {
   if (!data || !updateData) {
     return <div>No data in Checkbox Config</div>;
   }

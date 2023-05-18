@@ -1,9 +1,13 @@
 import { TextInputData } from './customSurveyComponents/TextInput/type';
 import { SortingCardBinData } from './customSurveyComponents/Sorting/type';
+import { RankData } from './customSurveyComponents/Rank/type';
 // type of components config props
-export interface ComponentConfigProps {
+
+export type updateDataFn = (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+export interface SurveyCustomComponentProps {
   data?: SurveyComponentData;
-  updateData: (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+  updateData: updateDataFn;
+  toNextPage?: () => void;
 }
 
 // the data structure of a survey component, after instantiation the id will be generated
@@ -16,20 +20,16 @@ export interface SurveyComponentData {
 
 interface RadioInputData extends SurveyComponentData {
   type: 'radio';
-  options: Array<string>;
-}
-interface RankData extends SurveyComponentData {
-  type: 'rank';
-  items: Array<string>;
+  options: string[];
 }
 
 interface CheckboxData extends SurveyComponentData {
   type: 'checkbox';
-  options: Array<string>;
+  options: string[];
 }
 
 
-export type ComponentData = TextInputData | RadioInputData | SortingCardBinData | RankData | CheckboxData;
+export type ComponentData = TextInputData | RadioInputData | SortingCardBinData | CheckboxData | RankData;
 
 export interface Page {
   id: string;

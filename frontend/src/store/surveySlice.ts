@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SurveyJson } from '../components/survey-editor/type'
-import { createSurveyJson, createSortRankSurveyJson } from '../components/survey-editor/utils'
+import { createSurveyJson, createSortRankSurveyJson, loadSurveyJsonFromLocalStorage } from '../components/survey-editor/utils'
 
 interface SurveyState {
   surveyJson: SurveyJson;
 }
 
 const initialState: SurveyState = {
-  surveyJson: createSortRankSurveyJson(),
+  surveyJson: loadSurveyJsonFromLocalStorage() || createSortRankSurveyJson(),
 };
 
 const surveySlice = createSlice({
@@ -16,6 +16,7 @@ const surveySlice = createSlice({
   reducers: {
     setSurveyJson: (state, action: PayloadAction<SurveyJson>) => {
       state.surveyJson = action.payload;
+      localStorage.setItem("surveyJson", JSON.stringify(state.surveyJson));
     },
   },
 });

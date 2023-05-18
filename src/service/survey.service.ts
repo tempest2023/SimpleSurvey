@@ -28,7 +28,6 @@ export async function findSurvey(
   const metricsLabels = {
     operation: "findSurvey",
   };
-
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
     const result = await SurveyModel.findOne(query, {}, options);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../store/store";
+import { setSurveyJson } from "../../../../store/surveySlice";
 import {
   Divider,
   Button,
@@ -30,86 +31,82 @@ import {
   SortingConfigProps,
   SortingCardProps,
 } from "./type";
-import { querySelectedData } from "../../utils";
-import { SurveyComponentData } from "../../type";
+import { querySelectedData, ellipseString } from "../../utils";
+import { SurveyCustomComponentProps } from "../../type";
 import ButtonModal from "../../../buttonModal";
 import "./index.css";
 
-export const SortingView = ({ data }: { data: SurveyComponentData }) => {
+export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomComponentProps) => {
   if (!data) {
     return <div>No data in Sorting Card</div>;
   }
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [hoveredBinId, setHoveredBinId] = useState("");
-
-  const {
-    title = "Sorting Card",
-    cardList = [],
-    binList = [],
-    sorting = {},
-  } = data as SortingCardBinData;
-
-  const binCount = binList.length;
-  const cardCount = cardList.length;
-
-  const handleBinClick = (binId: string) => {
-    if (currentCardIndex + 1 >= cardCount) {
-      setCurrentCardIndex(0);
-    } else {
-      setCurrentCardIndex(currentCardIndex + 1);
+  const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
+  const [cardList, setCardList] = useState<SortingCard[]>(data.cardList || []);
+  const [binList, setBinList] = useState<SortingBin[]>(data.binList || []);
+  // every time reset, clear sorting
+  const [sorting, setSorting] = useState<{ [name: string]: SortingCard[] }>({});
+  const [currentCardInd, setCurrentCardInd] = useState(0);
+  // update component data when editor state changes
+  useEffect(()=>{
+    if (!data) {
+      return;
     }
-    if (!sorting[binId]) {
-      sorting[binId] = [];
-    }
-    sorting[binId].push(cardList[currentCardIndex]);
-  };
+    data.cardList && setCardList(data.cardList);
+    data.binList && setBinList(data.binList);
+  }, [data])
+
+  // card count = cardList.length + all cards in sorting bins
+  const cardCount = cardList.length + Object.keys(sorting).map(key => sorting[key] && sorting[key].length).reduce((a, b) => a + b, 0);
 
   const moveCardToBin = (cardId: string, binId: string) => {
-    console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
+    // console.log(`[debug] moveCardToBin: cardId: ${cardId}, binId: ${binId}`);
     if (!cardId || !binId) {
       return;
     }
-    const card = cardList.find((card) => card.id === cardId);
+    let tmpCardList = [...cardList];
+    let card = null;
+    // find the card and remove it from cardList
+    for (let i = 0; i < tmpCardList.length; i++) {
+      if (tmpCardList[i].id === cardId) {
+        card = tmpCardList[i];
+        tmpCardList.splice(i, 1);
+        break;
+      }
+    }
     if (!card) {
+      console.log('[debug] [survey-editor/customSurveyComponents/Sorting/index.tsx] moveCardToBin: card not found', cardId, binId)
       return;
     }
     if (!sorting[binId]) {
       sorting[binId] = [];
     }
     sorting[binId].push(card);
-    card.isMoved = true;
-  };
-
-  const handleMenuVisibleChange = (visible: boolean) => {
-    if (!visible) {
-      setHoveredBinId("");
-    }
+    setCardList([...tmpCardList]);
+    setSorting({ ...sorting });
   };
 
   const handleRestoreClick = (cardId: string, binId: string) => {
     const index = sorting[binId].findIndex((card) => card.id === cardId);
+    if (index === -1) {
+      return;
+    }
+    let card = sorting[binId][index];
     sorting[binId].splice(index, 1);
-  };
-
-  const handleBinMouseEnter = (binId: string) => {
-    setHoveredBinId(binId);
-  };
-
-  const handleBinMouseLeave = () => {
-    setHoveredBinId("");
+    const tmpCardList = [...cardList, card];
+    setCardList(tmpCardList);
+    setSorting({ ...sorting });
   };
 
   const renderCard = () => {
-    const { id, title, description, cardImage, isMoved } =
+    const { id, title, description, cardImage } =
       cardList.length === 0
         ? {
             id: "",
             title: "",
             description: "",
             cardImage: "",
-            isMoved: false,
           }
-        : cardList[currentCardIndex];
+        : cardList[currentCardInd];
     const items: MenuProps["items"] = binList.map((bin) => {
       return {
         label: (
@@ -120,7 +117,7 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     }) as MenuProps["items"];
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <AntCard id={`card_${id}`} size="default" hoverable>
+        <AntCard id={`card_${id}`} size="default" hoverable={!!id}>
           <div className="sorting-card-item-panel">
             <img
               className="sorting-card-image"
@@ -128,14 +125,14 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
               src={cardImage}
             />
             <div className="sorting-card-item-info">
-              <span className="sorting-card-item-title">{title}</span>
+              <span className="sorting-card-item-title">{title || 'All Competed'}</span>
               <span className="sorting-card-item-desc">{description}</span>
               <Divider />
               <Dropdown
                 menu={{ items }}
-                disabled={isMoved || binList.length === 0}
+                disabled={binList.length === 0 || cardList.length === 0}
               >
-                <Button onClick={(e) => e.preventDefault()}>
+                <Button disabled={binList.length === 0 || cardList.length === 0} type="primary" onClick={(e) => e.preventDefault()}>
                   <Space>Move To</Space>
                 </Button>
               </Dropdown>
@@ -153,48 +150,16 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
           const binSorting = sorting[bin.id] || [];
           return (
             <div key={`bin_` + bin.id} className="sorting-bin-outter">
-              <span>{bin.title}</span>
-              <div className="sorting-each-bin">
+              <span className="sorting-bin-title">{bin.title}</span>
+              <div className="sorting-bin-box">
                 {binSorting.map((card) => (
-                  <AntCard
+                  <span
                     key={card.id}
-                    title={card.title}
-                    extra={
-                      <Button
-                        type="link"
-                        onClick={() => handleRestoreClick(card.id, bin.id)}
-                        disabled={cardList[currentCardIndex].id !== card.id}
-                      >
-                        Remove
-                      </Button>
-                    }
                   >
-                    <AntCard.Meta description={card.description} />
-                  </AntCard>
+                    <span className="sorting-card-item-title">{ellipseString(card.title, 5)}</span>
+                    <Popover content='Remove'><Button type="ghost" icon={<DeleteOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
+                  </span>
                 ))}
-                {hoveredBinId === bin.id && (
-                  <Dropdown
-                    menu={{
-                      items: binList
-                        .filter((item) => item.id !== bin.id)
-                        .map((item) => {
-                          return {
-                            label: (
-                              <Button
-                                key={item.id}
-                                onClick={() => handleBinClick(item.id)}
-                              >
-                                {item.title}
-                              </Button>
-                            ),
-                            key: item.id,
-                          };
-                        }) as MenuProps["items"],
-                    }}
-                    placement="bottomRight"
-                    arrow
-                  ></Dropdown>
-                )}
               </div>
             </div>
           );
@@ -203,34 +168,44 @@ export const SortingView = ({ data }: { data: SurveyComponentData }) => {
     );
   };
 
+  const onFinish = () => {
+    // save changes in this page and go to next page
+    updateData(data.id, { ...data, sorting }, false);
+    // set sorting data to next page's rank component dynamically
+    for(let i=0;i<surveyJson.pages.length;i++) {
+      const page = surveyJson.pages[i];
+      page.elements?.forEach((element) => {
+        if(element.id === data.id) {
+          // set the sorting data for the next page rank element
+          const targetPage = surveyJson.pages[i+1];
+          console.log('debug', targetPage)
+          if(targetPage) {
+            const targetElement = targetPage.elements?.find((element) => element.type === 'rank');
+            console.log('debug', targetElement);
+            if(targetElement) {
+              updateData(targetElement.id, {...targetElement.data, sorting}, false)
+            }
+          }
+        }
+      })
+    }
+    toNextPage && toNextPage();
+  }
+
   return (
     <div>
-      <span className="sorting-card-progress-bar-info">{`Cards: ${
-        cardCount > 0 ? currentCardIndex + 1 : 0
-      }/${cardCount}`}</span>
+      <span className="sorting-card-progress-bar-info">{`Cards: ${cardCount - cardList.length}/${cardCount}`}</span>
       <Progress
         width={80}
-        percent={(currentCardIndex / (cardCount === 0 ? 1 : cardCount)) * 100}
+        percent={((cardCount - cardList.length) / (cardCount === 0 ? 1 : cardCount)) * 100}
         showInfo={false}
       />
       {renderCard()}
-      {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardIndex+1 : 0}/${cardCount}`}</div> */}
+      {/* <div className="sorting-progress-info">{`${cardCount > 0 ? currentCardInd+1 : 0}/${cardCount}`}</div> */}
       {renderBins()}
-      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button
-          disabled={currentCardIndex === 0}
-          onClick={() => setCurrentCardIndex(currentCardIndex - 1)}
-        >
-          Previous
-        </Button>
-        <Button
-          disabled={currentCardIndex === cardCount - 1}
-          onClick={() => setCurrentCardIndex(currentCardIndex + 1)}
-        >
-          Next
-        </Button>
-        {currentCardIndex === cardCount - 1 && (
-          <Button type="primary">Continue</Button>
+      <div className="page-footer">
+        {cardList.length === 0 && (
+          <Button type="primary" onClick={onFinish}>Continue</Button>
         )}
       </div>
     </div>
@@ -416,7 +391,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     const [cardEditForm] = Form.useForm();
     useEffect(() => {
       cardEditForm.setFieldsValue(card);
-    })
+    });
     return (
       <Form
         form={cardEditForm}
@@ -432,10 +407,17 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
         </Form.Item>
         <Form.Item
           name="description"
-          label="Description"
+          label="Short Description"
           rules={[{ required: true }]}
         >
-          <Input placeholder="Enter card description" />
+          <Input placeholder="Enter short description of card" />
+        </Form.Item>
+        <Form.Item
+          name="fullDescription"
+          label="Full Description"
+          rules={[{ required: true }]}
+        >
+          <Input placeholder="Enter the full description of card" />
         </Form.Item>
         <Form.Item name="cardImage" label="Image">
           <Input placeholder="Enter card image url" />
@@ -466,10 +448,17 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
       </Form.Item>
       <Form.Item
         name="description"
-        label="Description"
+        label="Short Description"
         rules={[{ required: true }]}
       >
-        <Input placeholder="Enter card description" />
+        <Input placeholder="Enter the short description of card" />
+      </Form.Item>
+      <Form.Item
+        name="fullDescription"
+        label="Full Description"
+        rules={[{ required: true }]}
+      >
+        <Input placeholder="Enter the full description of card" />
       </Form.Item>
       <Form.Item name="cardImage" label="Image">
         <Input placeholder="Enter card image url" />
@@ -508,7 +497,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
       ellipsis: true,
     },
     {
-      title: "Description",
+      title: "Short Description",
       dataIndex: "description",
       key: "description",
       width: "25%",
