@@ -29,3 +29,16 @@ export async function getUsersHandler(
     return res.status(409).send(e.message);
   }
 }
+
+export async function getUserInfoHandler(
+  req: Request,
+  res: Response
+) {
+  try{
+    const user = res.locals.user;
+    return res.send(user);
+  }catch(e:any) {
+    logger.error(e);
+    return res.status(409).send(e.message);
+  }
+}

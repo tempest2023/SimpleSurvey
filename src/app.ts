@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import cors from 'cors';
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
@@ -16,6 +16,10 @@ import swaggerDocs from "./utils/swagger";
 const port = config.get<number>("port");
 
 const app = express();
+const options: cors.CorsOptions = {
+  origin: ['http://localhost:3000']
+};
+app.use(cors(options));
 
 app.use(express.json());
 

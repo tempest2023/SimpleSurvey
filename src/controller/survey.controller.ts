@@ -63,7 +63,7 @@ export async function getSurveyHandler(
   res: Response
 ) {
   const surveyId = req.params.surveyId;
-  const survey = await findSurvey({ surveyId });
+  const survey = await findSurvey({ _id: surveyId });
 
   if (!survey) {
     return res.sendStatus(404);

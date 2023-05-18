@@ -12,6 +12,7 @@ import {
   findProject,
   findProjects,
 } from "../service/project.service";
+import { createSurvey } from "../service/survey.service";
 
 export async function createProjectHandler(
   req: Request<{}, {}, CreateProjectInput["body"]>,
@@ -21,7 +22,13 @@ export async function createProjectHandler(
   console.log('[debug][project.controller.ts] create a new project, userId: ', userId);
   const body = req.body;
   try {
-    const project = await createProject({ ...body, admin: userId });
+    // create a new survey by admin
+    const survey = await createSurvey({ 
+      user: userId,
+      title: "Untitled Survey",
+      content: {}
+     });
+    const project = await createProject({ ...body, admin: userId, survey: survey._id });
     return res.send(project);
   } catch (e:any) {
     console.log('[debug][project.controller.ts] create a new project, error: ', e);
@@ -44,17 +51,17 @@ export async function updateProjectHandler(
   const projectId = req.params.projectId;
   const update = req.body;
 
-  const project = await findProject({ projectId });
+  const project = await findProject({ _id: projectId });
 
-  if (!project) {
+  if (!project || Object.keys(project).length === 0) {
     return res.sendStatus(404);
   }
 
-  if (String(project.admin) !== userId) {
+  if (String(project.admin._id) !== userId && !project.users?.includes(userId)) {
     return res.sendStatus(403);
   }
 
-  const updatedProject = await findAndUpdateProject({ projectId }, update, {
+  const updatedProject = await findAndUpdateProject({ _id: projectId }, update, {
     new: true,
   });
 
@@ -72,15 +79,15 @@ export async function getProjectHandler(
   res: Response
 ) {
   const projectId = req.params.projectId;
-  const project = await findProject({ projectId });
-
-  if (!project) {
+  const project = await findProject({ _id: projectId });
+  // console.log('[debug][project.controller.ts] get a project, project: ', project);
+  if (!project || Object.keys(project).length === 0) {
     return res.sendStatus(404);
   }
 
   // permission check
   const userId = res.locals.user._id;
-  if (String(project.admin) !== userId || !project.users.includes(userId)) {
+  if (String(project.admin._id) !== userId && !project.users?.includes(userId)) {
     return res.sendStatus(403);
   }
 
@@ -94,7 +101,7 @@ export async function getProjectsByUserIdHandler(
   const userId = res.locals.user._id;
   const projects = await findProjects({ admin: userId });
 
-  if (!projects) {
+  if (!projects || projects.length === 0) {
     return res.sendStatus(404);
   }
 
@@ -108,17 +115,17 @@ export async function deleteProjectHandler(
   const userId = res.locals.user._id;
   const projectId = req.params.projectId;
 
-  const project = await findProject({ projectId });
-
-  if (!project) {
+  const project = await findProject({ _id: projectId });
+  // console.log('[debug][project.controller.ts] delete a project, project: ', project);
+  if (!project || Object.keys(project).length === 0) {
     return res.sendStatus(404);
   }
 
-  if (String(project.admin) !== userId) {
+  if (String(project.admin._id) !== userId) {
     return res.sendStatus(403);
   }
 
-  await deleteProject({ projectId });
+  await deleteProject({ _id: projectId });
 
   return res.sendStatus(200);
 }

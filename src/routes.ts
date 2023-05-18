@@ -32,7 +32,7 @@ import {
   getUserSessionsHandler,
   deleteSessionHandler,
 } from "./controller/session.controller";
-import { createUserHandler, getUsersHandler } from "./controller/user.controller";
+import { createUserHandler, getUserInfoHandler, getUsersHandler } from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
@@ -105,6 +105,8 @@ function routes(app: Express) {
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
 
   app.get("/api/users", requireUser, getUsersHandler);
+
+  app.get("/api/users/me", requireUser, getUserInfoHandler);
 
   app.post(
     "/api/sessions",
@@ -451,19 +453,19 @@ function routes(app: Express) {
    */
   app.put(
     "/api/projects/:projectId",
-    [requireUser, validateResource(updateProjectSchema)],
+    [requireUser],
     updateProjectHandler
   );
 
   app.get(
     "/api/projects/:projectId",
-    validateResource(getProjectSchema),
+    [requireUser, validateResource(getProjectSchema)],
     getProjectHandler
   );
 
   app.get(
     "/api/projects",
-    [requireUser],
+    requireUser,
     getProjectsByUserIdHandler
   )
 
