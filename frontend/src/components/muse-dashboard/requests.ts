@@ -92,6 +92,27 @@ export const createProject = async (name: string, description: string) => {
     return res;
   }).then((res) => res.json());
 }
+
+export const duplicateProject = async(project: any) => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+  return fetch(`${API_URL}/api/projects`, {
+    method: "POST",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`,
+      "x-refresh": `${refreshToken}`,
+    },
+    body: JSON.stringify(project),
+  }).then((res) => {
+    if(res.status === 401) {
+      location.href = "/sign-in";
+    }
+    return res;
+  }).then((res) => res.json());
+}
+
 export const deleteProject = async (_id: string) => {
   const refreshToken = localStorage.getItem("refreshToken");
   const accessToken = localStorage.getItem("accessToken");
@@ -108,7 +129,7 @@ export const deleteProject = async (_id: string) => {
       location.href = "/sign-in";
     }
     return res;
-  }).then((res) => res.json());
+  })
 }
 
 export const updateProject = async (_id: string, name: string, description: string) => {

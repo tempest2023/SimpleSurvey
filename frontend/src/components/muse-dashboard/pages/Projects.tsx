@@ -3,7 +3,7 @@ import {
   Row,
   Col,
   Card,
-  Radio,
+  Popover,
   Table,
   message,
   Button,
@@ -18,8 +18,7 @@ import {
 
 import {
   PlusCircleOutlined,
-  UpOutlined,
-  DownOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
@@ -28,7 +27,7 @@ import ButtonModal from "../../buttonModal";
 
 import { Link } from "react-router-dom";
 
-import { getProjects, deleteProject, createProject, updateProject } from "../requests";
+import { getProjects, deleteProject, createProject, duplicateProject, updateProject } from "../requests";
 import { dateOption } from "../../../constants";
 
 const { Title } = Typography;
@@ -66,7 +65,6 @@ function Projects() {
     const project = {
       ...values,
     };
-    // TODO: update project
     const res = await updateProject(project._id, project.name, project.description);
     // console.log('[log] update project', res);
     if (!res || !res._id) {
@@ -86,7 +84,6 @@ function Projects() {
     const project = {
       ...values,
     };
-    // TODO: add project
     const res = await createProject(project.name, project.description);
     // console.log('[log] create project', res);
     if (!res || !res._id) {
@@ -101,6 +98,42 @@ function Projects() {
     projects.push(res);
     setProjects([...projects]);
   };
+  const confirmDeleteProject = async (projectId: string) => {
+    const res = await deleteProject(projectId);
+    if(!res || res.status !== 200) {
+      notification.error({
+        message: "Delete project failed",
+      })
+      return;
+    }
+    notification.success({
+      message: "Delete project success",
+    })
+    const tmp = projects.filter((item: any) => item._id !== projectId);
+    setProjects([...tmp]);
+  };
+  const confirmCopyProject = async (projectId: string) => {
+    let tmpProject: any = {...projects.filter((item: any) => item._id === projectId)[0]};
+    tmpProject._id = null;
+    tmpProject.admin = tmpProject.admin._id;
+    tmpProject.survey = tmpProject.survey.surveyId;
+    tmpProject.createdAt = null;
+    tmpProject.updatedAt = null;
+    tmpProject.name = tmpProject.name + ' (copy)';
+    const res = await duplicateProject(tmpProject);
+    console.log('[log] duplicate project', res)
+    if(!res || !res._id) {
+      notification.error({
+        message: "Duplicate project failed",
+      })
+      return;
+    }
+    notification.success({
+      message: "Duplicate project success",
+    })
+    projects.push(res);
+    setProjects([...projects]);
+  }
   const ProjectEditForm = ({ project }: { project: any }) => {
     const [projectEditForm] = Form.useForm();
     useEffect(() => {
@@ -161,10 +194,6 @@ function Projects() {
       </Form.Item>
     </Form>
   );
-  const confirmDeleteProject = (projectId: string) => {
-    //TODO: delete project
-  };
-
   // table code start
   const columns = [
     {
@@ -185,9 +214,11 @@ function Projects() {
       key: "survey",
       dataIndex: "survey",
       render: (survey: any) => (
-        <Link to={`/editor?surveId=${survey.surveyId}`}>
-          <span>{survey.title}</span>
-        </Link>
+        <Popover content="Click to enter the survey editor">
+          <Link to={`/editor?surveId=${survey.surveyId}`}>
+            <span>{survey.title}</span>
+          </Link>
+        </Popover>
       ),
     },
     {
@@ -241,6 +272,16 @@ function Projects() {
             >
               <ProjectEditForm project={record} />
             </ButtonModal>
+          </Space>
+          <Space size="middle">
+            <Popconfirm
+              title="Do you want to duplicate this project?"
+              onConfirm={() => confirmCopyProject(record._id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button shape="circle" icon={<CopyOutlined />} size="small" />
+            </Popconfirm>
           </Space>
           <Space size="middle">
             <Popconfirm

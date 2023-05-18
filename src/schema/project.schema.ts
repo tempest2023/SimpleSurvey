@@ -1,4 +1,4 @@
-import { array, object, string, TypeOf } from "zod";
+import { array, object, string, TypeOf, optional } from "zod";
 
 /**
  * @openapi
@@ -69,13 +69,14 @@ import { array, object, string, TypeOf } from "zod";
 
 const payload = {
   body: object({
-    users: array(string()).min(0, "There must be at least 1 user in users"),
     name: string({
       required_error: "name userid is required",
     }).min(4, "name must be at least 4 characters long"),
     description: string({
       required_error: "description is required",
-    }).min(6, "description must be at least 4 characters long")
+    }).min(6, "description must be at least 4 characters long"),
+    users: optional(array(string()).min(0, "There must be at least 1 user in users")),
+    survey: optional(string()),
   }),
 };
 

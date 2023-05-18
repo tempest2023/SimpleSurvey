@@ -29,14 +29,14 @@ function App() {
       <div className="App">
       <Switch>
         <Route path="/editor" exact component={SurveyEditor} />
-        <Route path="/sign-up" exact component={SignUp} />
+        {/* <Route path="/sign-up" exact component={SignUp} /> */}
         <Route path="/sign-in" exact component={SignIn} />
         <Main>
-          <Route exact path="/dashboard" component={Home} />
           <Route exact path="/projects" component={Projects} />
-          <Route exact path="/billing" component={Billing} />
-          <Route exact path="/profile" component={Profile} />
-          <Redirect from="*" to="/dashboard" />
+          {/* <Route exact path="/dashboard" component={Home} /> */}
+          {/* <Route exact path="/billing" component={Billing} /> */}
+          {/* <Route exact path="/profile" component={Profile} /> */}
+          <Redirect from="*" to="/projects" />
         </Main>
       </Switch>
     </div>

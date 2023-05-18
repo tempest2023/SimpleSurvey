@@ -131,22 +131,22 @@ function Sidenav({ color }: { color: string }) {
   ];
 
   const menuItems = [
-    {
-      key: "dashboard",
-      label: (
-        <NavLink to="/dashboard">
-          <span
-            className="icon"
-            style={{
-              background: page === "dashboard" ? color : "",
-            }}
-          >
-            {dashboard}
-          </span>
-          <span className="label">Dashboard</span>
-        </NavLink>
-      ),
-    },
+    // {
+    //   key: "dashboard",
+    //   label: (
+    //     <NavLink to="/dashboard">
+    //       <span
+    //         className="icon"
+    //         style={{
+    //           background: page === "dashboard" ? color : "",
+    //         }}
+    //       >
+    //         {dashboard}
+    //       </span>
+    //       <span className="label">Dashboard</span>
+    //     </NavLink>
+    //   ),
+    // },
     {
       key: "tables",
       label: (
