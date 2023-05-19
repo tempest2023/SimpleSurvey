@@ -82,7 +82,7 @@ export default function Designer() {
     // set a timer for auto save
     const autoSaveHandler = async () => {
       const surveyJson = JSON.parse(localStorage.getItem('surveyJson')|| '{}');
-      console.log(`[debug] auto save: ${surveyJson._surveyId}, ${surveyJson.surveyName}`);
+      // console.log(`[debug] auto save: ${surveyJson._surveyId}, ${surveyJson.surveyName}`);
       const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
       if(!res) {
         console.log('[error] [designer/index.tsx] auto save failed', res);
@@ -94,7 +94,8 @@ export default function Designer() {
       }
     }
     if (!autoSaveTimer) {
-      const timer = setInterval(autoSaveHandler, 50000);
+      // trigger auto save every 1 minute
+      const timer = setInterval(autoSaveHandler, 60*1000);
       setAutoSaveTimer(timer);
     }
     return () => {
