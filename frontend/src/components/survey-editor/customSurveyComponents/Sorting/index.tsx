@@ -222,11 +222,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     elementId
   ) as SortingCardBinData;
 
-  if (!data) {
-    return <div>No data in Sorting Card...</div>;
-  }
-
-  const { cardList: originCardList, binList: originBinList } = data;
+  const { cardList: originCardList, binList: originBinList } = data || {};
   const [cardList, setCardList] = useState<SortingCard[]>(originCardList || []);
   const [binList, setBinList] = useState<SortingBin[]>(originBinList || []);
   const [cardForm] = Form.useForm();
@@ -601,6 +597,9 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
       ),
     },
   ];
+  if (!data) {
+    return <div>No data in Sorting Card...</div>;
+  }
 
   return (
     <div>

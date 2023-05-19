@@ -32,10 +32,7 @@ export function PageComponentConfig({ updateData }: PageSurveyCustomComponentPro
   const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const pageId = useSelector((state: RootState) => state.editor.selectedPageId);
   const data = queryPageById(surveyJson, pageId);
-  
-  if (!data) {
-    return <div>No data in Page Config</div>;
-  }
+
   const [pageForm] = Form.useForm();
 
   const debounce = useCallback(
@@ -56,6 +53,10 @@ export function PageComponentConfig({ updateData }: PageSurveyCustomComponentPro
     const page: PageData = {
       ...values,
     };
+    if(!data) {
+      console.log(`[error] [Page/index.tsx] onFinishedForm: data is null`)
+      return;
+    }
     // this is a page data update
     updateData(data.id, page, true);
   };
@@ -76,7 +77,9 @@ export function PageComponentConfig({ updateData }: PageSurveyCustomComponentPro
     // if pageForm is connected to the DOM, set the form values
     pageForm.setFieldsValue(JSON.parse(JSON.stringify(data)));
   }, [data]);
-
+  if (!data) {
+    return <div>No data in Page Config</div>;
+  }
   return (
     <>
     <Form initialValues={{

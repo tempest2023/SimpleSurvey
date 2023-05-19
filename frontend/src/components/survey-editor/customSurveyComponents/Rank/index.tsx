@@ -213,16 +213,8 @@ export const RankConfig = ({ updateData }: RankConfigProps) => {
     elementId
   ) as RankData;
 
-  if (!data) {
-    return <div>No data in Sorting Card...</div>;
-  }
-
-  const [binList, setBinList] = useState<SortingBinSelected[]>(data.binList || []);
-  const [limit, setLimit] = useState<number>(data.limit || 10);
-  
-  if (!data) {
-    return <div>No data in Rank Config</div>;
-  }
+  const [binList, setBinList] = useState<SortingBinSelected[]>(data?.binList || []);
+  const [limit, setLimit] = useState<number>(data?.limit || 10);
 
   const debounce = useCallback(
     (func: Function, wait: number) => {
@@ -317,6 +309,9 @@ export const RankConfig = ({ updateData }: RankConfigProps) => {
       ),
     },
   ];
+  if (!data) {
+    return <div>No data in Rank Config</div>;
+  }
   return <div>
     <Form initialValues={{
       limit
