@@ -10,11 +10,11 @@ export async function createUrl(input: UrlInput) {
   const metricsLabels = {
     operation: "createUrl",
   };
-
+  console.log('[log][url.service.ts] createUrl, input: ', input)
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
     // find url record by userId and surveyId
-    const url = await findUrl({ userId: input.userId, surveyId: input.surveyId });
+    const url = await findUrl({ userId: input.userId, surveyId: input.surveyId }); // this userId is the patientId
     // if it already exists, update it
     if (url) {
       const updatedUrl = await findAndUpdateUrl(
@@ -44,7 +44,7 @@ export async function findUrl(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await UrlModel.findOne(query, {}, options);
+    const result = await UrlModel.findOne(query, {}, options).populate('surveyId');
     timer({ ...metricsLabels, success: "true" });
     return result;
   } catch (e) {

@@ -1,4 +1,4 @@
-import { object, number, string, TypeOf } from "zod";
+import { object, optional, string, TypeOf } from "zod";
 
 /**
  * @openapi
@@ -59,12 +59,11 @@ const payload = {
     surveyId: string({
       required_error: "surveyId is required",
     }),
+    // this userId is the patientId
     userId: string({
       required_error: "userId is required",
     }),
-    url: string({
-      required_error: "url is required",
-    }).optional(),
+    url: optional(string()),
   }),
 };
 
@@ -76,12 +75,18 @@ const params = {
   }),
 };
 
+const updatePayload = {
+  body: object({
+    url: optional(string()),
+  }),
+}
+
 export const createUrlSchema = object({
   ...payload,
 });
 
 export const updateUrlSchema = object({
-  ...payload,
+  ...updatePayload,
   ...params,
 });
 

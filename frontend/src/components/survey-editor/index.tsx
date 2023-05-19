@@ -66,6 +66,7 @@ function SurveyEditor() {
   const items: TabsProps['items'] = [
     {
       key: '6',
+      disabled: true,
       label: <Link to="/projects">Projects</Link>,
     },
     {

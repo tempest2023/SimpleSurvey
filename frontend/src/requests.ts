@@ -173,3 +173,26 @@ export const updateSurveyById = async (surveyId: string, title: string, content:
     }),
   }).then(resHandler).then((res) => res.json());
 }
+
+export const publishSurvey = async (surveyId: string, patientId: string, customUrlLink?: string) => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  const accessToken = localStorage.getItem("accessToken");
+  const payload = customUrlLink ? {
+    surveyId,
+    userId: patientId,
+    url: customUrlLink,
+  } : {
+    surveyId,
+    userId: patientId,
+  }
+  return fetch(`${API_URL}/api/url`, {
+    method: "POST",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`,
+      "x-refresh": `${refreshToken}`,
+    },
+    body: JSON.stringify(payload),
+  }).then(resHandler).then((res) => res.json());
+}

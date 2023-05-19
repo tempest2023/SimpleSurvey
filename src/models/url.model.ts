@@ -24,7 +24,7 @@ const urlSchema = new mongoose.Schema(
       unique: true,
       default: () => `url_${nanoid()}`,
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    userId: { type: String, required: false },
     surveyId: { type: mongoose.Schema.Types.ObjectId, ref: "Survey" },
     url: { type: String, required: true }
   },

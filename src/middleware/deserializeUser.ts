@@ -22,12 +22,6 @@ const deserializeUser = async (
   const { decoded, expired } = verifyJwt(accessToken, "accessTokenPublicKey");
 
   // console.log('[debug] deserializeUser.ts: check accessToken: ', decoded, expired);
-
-  if (decoded) {
-    res.locals.user = decoded;
-    return next();
-  }
-
   if (expired && refreshToken) {
     const newAccessToken = await reIssueAccessToken({ refreshToken });
 
@@ -38,6 +32,10 @@ const deserializeUser = async (
     const result = verifyJwt(newAccessToken as string, "accessTokenPublicKey");
 
     res.locals.user = result.decoded;
+    return next();
+  }
+  if (decoded) {
+    res.locals.user = decoded;
     return next();
   }
 
