@@ -75,7 +75,7 @@ export async function getUrlByLinkHandler(
 ) {
   const url = req.params.url;
   const urlRes = await findUrl({ url});
-  console.log('[log][url.controller.ts] getUrlByLink, link: ', url, ', urlRes: ', urlRes)
+  // console.log('[log][url.controller.ts] getUrlByLink, link: ', url, ', urlRes: ', urlRes)
   if (!urlRes) {
     return res.sendStatus(404);
   }
@@ -106,10 +106,6 @@ export async function deleteUrlHandler(
 
   if (!url) {
     return res.sendStatus(404);
-  }
-
-  if (String(url.userId) !== userId) {
-    return res.sendStatus(403);
   }
 
   await deleteUrl({ urlId });
