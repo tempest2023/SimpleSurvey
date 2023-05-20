@@ -25,14 +25,14 @@ function LineChart() {
         </div>
       </div>
 
-      <ReactApexChart
+      {/* <ReactApexChart
         className="full-width"
         options={lineChart.options}
         series={lineChart.series}
         type="area"
         height={350}
         width={"100%"}
-      />
+      /> */}
     </>
   );
 }
