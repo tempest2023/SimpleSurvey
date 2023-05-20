@@ -10,4 +10,7 @@ export default defineConfig({
     origin: 'http://localhost:3000',
   },
   plugins: [react()],
+  build: {
+    outDir: 'build',
+  },
 })
