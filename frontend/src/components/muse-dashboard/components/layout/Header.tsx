@@ -18,7 +18,7 @@ import {
 } from "antd";
 import { getUserInfo } from "../../../../requests";
 
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import avtar from "../../assets/images/logo-apple.svg";
 
