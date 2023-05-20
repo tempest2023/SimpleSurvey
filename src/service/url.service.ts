@@ -10,7 +10,6 @@ export async function createUrl(input: UrlInput) {
   const metricsLabels = {
     operation: "createUrl",
   };
-  console.log('[log][url.service.ts] createUrl, input: ', input)
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
     // find url record by userId and surveyId
