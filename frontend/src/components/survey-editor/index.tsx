@@ -13,6 +13,15 @@ import { getSurveyBySurveyId } from '../../requests';
 import { useHistory, Link } from "react-router-dom";
 import "./index.css";
 
+function getParameterByName(name: string, url: string) {
+  name = name.replace(/[[\]]/g, '\\$&');
+  let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  let results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 function SurveyEditor() {
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
@@ -21,8 +30,7 @@ function SurveyEditor() {
   };
   useEffect(()=>{
     // get surveyId from url parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const surveyId = urlParams.get('surveyId');
+    const surveyId = getParameterByName('surveyId', window.location.href);
     // console.log(`[debug] [survey-editor/index.tsx] surveyId: ${surveyId}`)
     async function getSurveyData(surveyId: string){
       const res = await getSurveyBySurveyId(surveyId);
