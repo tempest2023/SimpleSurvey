@@ -18,7 +18,7 @@ const port = config.get<number>("port");
 
 const app = express();
 const options: cors.CorsOptions = {
-  origin: ['http://localhost:3000']
+  origin: ['*']
 };
 app.use(cors(options));
 
@@ -47,10 +47,10 @@ app.listen(port, async () => {
   await connect();
 
   routes(app);
+  
+  startFrontendServer(app);
 
   startMetricsServer();
-  
-  startFrontendServer();
   
   swaggerDocs(app, port);
 });
