@@ -1,5 +1,5 @@
 import SurveyEditor from './components/survey-editor';
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { HashRouter, Switch, Route, Redirect } from "react-router-dom";
 import Home from "./components/muse-dashboard/pages/Home";
 import Projects from "./components/muse-dashboard/pages/Projects";
 import Billing from "./components/muse-dashboard/pages/Billing";
@@ -25,7 +25,7 @@ const surveyJson = {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="App">
       <Switch>
         <Route path="/editor" exact component={SurveyEditor} />
@@ -40,7 +40,7 @@ function App() {
         </Main>
       </Switch>
     </div>
-  </BrowserRouter>
+  </HashRouter>
   )
 }
 

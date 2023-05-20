@@ -2,8 +2,8 @@ import { notification } from "antd";
 import { API_URL } from "./constants";
 
 const resHandler = (res: any) => {
-  if (res.status === 401) {
-    location.href = "/sign-in";
+  if (res.status === 401 || res.status === 403) {
+    location.href = "/#/sign-in";
   }
   if (res.status === 404) {
     return {
@@ -54,12 +54,7 @@ export const getUserInfo = async () => {
       "Authorization": `Bearer ${accessToken}`,
       "x-refresh": `${refreshToken}`,
     }
-  }).then((res) => {
-    if(res.status === 401) {
-      location.href = "/sign-in";
-    }
-    return res;
-  }).then((res) => res.json());
+  }).then(resHandler).then((res) => res.json());
 }
 
 export const getProjects = async() => {
