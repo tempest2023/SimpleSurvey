@@ -27,13 +27,13 @@ function EChart() {
   return (
     <>
       <div id="chart">
-        <ReactApexChart
+        {/* <ReactApexChart
           className="bar-chart"
           options={eChart.options}
           series={eChart.series}
           type="bar"
           height={220}
-        />
+        /> */}
       </div>
       <div className="chart-vistior">
         <Title level={5}>Active Users</Title>
@@ -44,7 +44,7 @@ function EChart() {
           We have created multiple options for you to put together and customise
           into pixel perfect pages.
         </Paragraph>
-        <Row gutter>
+        <Row>
           {items.map((v, index) => (
             <Col xs={6} xl={6} sm={6} md={6} key={index}>
               <div className="chart-visitor-count">
