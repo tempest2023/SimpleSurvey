@@ -354,14 +354,14 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     });
   };
 
-  const onFinishCard = (values: any) => {
+  const onFinishAddard = (values: any) => {
     const card: SortingCard = {
       ...values,
       id: `${Date.now()}`,
       isAvailable: true,
       rank: cardList.length,
     };
-    // console.log('[debug] onFinishCard card:', card);
+    // console.log('[debug] onFinishAddard card:', card);
     onAddCard(card);
     cardForm.resetFields();
   };
@@ -436,7 +436,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     <Form
       form={cardForm}
       title="Add Cards"
-      onFinish={onFinishCard}
+      onFinish={onFinishAddard}
       layout="horizontal"
     >
       <Form.Item name="title" label="Title" rules={[{ required: true }]}>

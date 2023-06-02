@@ -44,7 +44,19 @@ export const createSortRankSurveyJson = (): SurveyJson => {
           name: "rank",
         }
       ]
-    }, 
+    },
+    {
+      id: nanoid(),
+      title: "Page 3",
+      description: "This is the page 3",
+      elements: [
+        {
+          id: nanoid(),
+          type: "radio",
+          name: "radio",
+        }
+      ]
+    },
     {
       id: nanoid(),
       title: "",

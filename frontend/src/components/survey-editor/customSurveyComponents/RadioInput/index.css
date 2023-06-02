@@ -1,0 +1,24 @@
+.radio-input-conofig-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0 0 10px;
+    margin-bottom: 20px;
+}
+
+.radio-input-conofig-form-radioinput-item {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.2rem;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.radio-input-conofig-form-radioinput-item-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}

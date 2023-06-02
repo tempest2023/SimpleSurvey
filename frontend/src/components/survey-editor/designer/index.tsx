@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useState, useCallback } from "react";
-import { Layout, List, Button, notification } from "antd";
+import { Layout, List, Button, notification, Divider } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
@@ -12,6 +12,7 @@ import { TextInputConfig } from "../customSurveyComponents/TextInput";
 import { SortingConfig } from "../customSurveyComponents/Sorting";
 import { PageComponentConfig } from "../customSurveyComponents/Page";
 import { RankConfig } from "../customSurveyComponents/Rank";
+import { RadioInputConfig } from "../customSurveyComponents/RadioInput";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
 import {
@@ -314,6 +315,7 @@ export default function Designer() {
           {editorState.selectedPageId && (
             <PageComponentConfig updateData={upadteSurveyJson} />
           )}
+          <Divider />
           {editorState.selectedElementData && editorState.selectedElementData.type === "text" && (
             <TextInputConfig updateData={upadteSurveyJson} />
           )}
@@ -323,6 +325,11 @@ export default function Designer() {
           {editorState.selectedElementData && editorState.selectedElementData.type === "rank" && (
             <RankConfig updateData={upadteSurveyJson} />
           )}
+          {
+            editorState.selectedElementData && editorState.selectedElementData.type === "radio" && (
+              <RadioInputConfig updateData={upadteSurveyJson} />
+            )
+          }
         </div>
       </div>
     </Layout>
