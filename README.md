@@ -93,3 +93,12 @@ Survey editor module: 2 weeks
 User management module: 1 weeks
 Survey components configuration module: 1 weeks
 Survey deployment and delivery module: 2 weeks
+
+
+## Deployment on Server
+1. Change API_URL in `frontend/src/constants.tsx` to '', no cors origin request in deployment
+2. `cd frontend && yarn build`
+3. `yarn dev` at root directory to test the backend services, if everything is good, the website will be deployed at `localhost:8080`
+4. `yarn build` to build backend codes to javascript codes for deployment.
+5. Use any deployment tool to deploy this node.js backend service. Such as `pm2 start`
+
