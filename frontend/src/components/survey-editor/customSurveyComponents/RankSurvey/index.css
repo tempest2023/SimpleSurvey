@@ -1,4 +1,4 @@
-.radio-panel {
+.ranksurvey-radio {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -8,7 +8,22 @@
   padding: 0 10px;
   padding-bottom: 2rem;
 }
-.radio-panel > .radio-input-group {
+.ranksurvey-task {
+  border-bottom: 5px solid lightskyblue;
+}
+.ranksurvey-task:last-child {
+  border-bottom: none;
+}
+.ranksurvey-task .ant-radio-group.ant-radio-group-outline {
+  display: flex!important;
+  flex-direction: column!important;
+  margin-top: 0.5rem;
+}
+.ranksurvey-task .ant-form-item-label label {
+  font-size: 1.2rem!important;
+  font-weight: 500!important;
+}
+.ranksurvey-radio > .ranksurvey-radio {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -17,21 +32,17 @@
   padding: 0 0 0 10px;
   margin-bottom: 20px;
 }
-.radio-input-group-title {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin: 0;
-  padding: 0;
-  margin-bottom: 1rem;
+.ranksurvey-radio-hidden {
+  display: none;
 }
 .radio-input-conofig-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    padding: 0 0 0 10px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0 0 0 10px;
+  margin-bottom: 20px;
 }
 
 .radio-input-conofig-form-radioinput-item {

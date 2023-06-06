@@ -156,7 +156,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
                   <span
                     key={card.id}
                   >
-                    <span className="sorting-card-item-title">{ellipseString(card.title, 5)}</span>
+                    <span className="sorting-card-item-title">{card.title}</span>
                     <Popover content='Remove'><Button type="ghost" icon={<DeleteOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
                   </span>
                 ))}
@@ -178,10 +178,8 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
         if(element.id === data.id) {
           // set the sorting data for the next page rank element
           const targetPage = surveyJson.pages[i+1];
-          console.log('debug', targetPage)
           if(targetPage) {
             const targetElement = targetPage.elements?.find((element) => element.type === 'rank');
-            console.log('debug', targetElement);
             if(targetElement) {
               updateData(targetElement.id, {...targetElement.data, sorting}, false)
             }

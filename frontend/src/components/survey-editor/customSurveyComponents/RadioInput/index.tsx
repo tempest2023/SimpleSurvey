@@ -19,6 +19,7 @@ import {
   notification,
 } from "antd";
 import type { MenuProps } from "antd";
+import type { RadioChangeEvent } from "antd";
 import {
   PlusCircleOutlined,
   UpOutlined,
@@ -45,13 +46,47 @@ export const RadioInputView = ({
   data,
   updateData,
 }: {
-  data: SurveyComponentData;
+  data: RadioInputData;
   updateData: updateDataFn;
 }) => {
+  const { radioInputList } = data || {};
+  const [values, setValues] = useState<Record<string, string>>({});
+  const onUpdateChoice = (e: RadioChangeEvent, id: string) => {
+    console.log("radio checked", e.target.value);
+    values[id] = e.target.value;
+    console.log("[debug] choicevalues", values);
+    setValues(values);
+  };
+
   if (!data) {
     return <div>No data in Rank Component</div>;
   }
-  return <div></div>;
+  return (
+    <div className="radio-panel">
+      {radioInputList && radioInputList.map((radioInputItem) => (
+        <div className="radio-input-group">
+        <div className="radio-input-group-title">{radioInputItem.title}</div>
+        <Radio.Group
+          key={`radio_input_${radioInputItem.id}`}
+          name={`radio_input_${radioInputItem.id}`}
+          // onChange={(e) => onUpdateChoice(e, radioInputItem.id)}
+          // value={values[radioInputItem.id]}
+        >
+          <Space direction="vertical">
+          {radioInputItem.radioItemList.map((radioItem) => (
+            <Radio
+              value={radioItem.text}
+              key={`radio_input_choice_${radioItem.id}`}
+            >
+              {radioItem.text}
+            </Radio>
+          ))}
+          </Space>
+        </Radio.Group>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export const RadioInputConfig = ({ updateData }: RadioInputConfigProps) => {
@@ -103,8 +138,7 @@ export const RadioInputConfig = ({ updateData }: RadioInputConfigProps) => {
         // const optionIndex = parseInt(key.split('_')[1]);
         const radioItem: RadioItem = {
           id: nanoid(12),
-          text: values[key],
-          value: values[key],
+          text: values[key]
         };
         radioIputItem.radioItemList.push(radioItem);
       }
@@ -187,7 +221,7 @@ export const RadioInputConfig = ({ updateData }: RadioInputConfigProps) => {
       {item.radioItemList.map((radioItem, radioIndex) => {
         return (
           <span key={`radio_${index}_options_${radioIndex}`}>
-            <Radio disabled={true} value={radioItem.value}>
+            <Radio disabled={true} value={radioItem.text}>
               {radioItem.text}
             </Radio>
           </span>

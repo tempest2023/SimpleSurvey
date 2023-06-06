@@ -13,6 +13,7 @@ import { SortingConfig } from "../customSurveyComponents/Sorting";
 import { PageComponentConfig } from "../customSurveyComponents/Page";
 import { RankConfig } from "../customSurveyComponents/Rank";
 import { RadioInputConfig } from "../customSurveyComponents/RadioInput";
+import { RankSurveyConfig } from "../customSurveyComponents/RankSurvey";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
 import {
@@ -264,9 +265,6 @@ export default function Designer() {
     localStorage.setItem("surveyJson", JSON.stringify(tmpSurveyJson));
   };
 
-  // console.log('[debug] [designer/index.tsx] surveyJson:', surveyJson)
-  // console.log('[debug] [designer/index.tsx] editorState:', editorState)
-
   return (
     <Layout className="designer">
       <div className="menu-panel">
@@ -278,7 +276,7 @@ export default function Designer() {
             </div>
           }
           dataSource={surveyJson?.pages || []}
-          renderItem={(item) => (
+          renderItem={(item: Page) => (
             <List.Item style={{ padding: 0 }} className={editorState.selectedPageId === item.id ? "active-menu" : ""}>
               <Button
                 onClick={()=>onSelectPage(item.id)}
@@ -328,6 +326,11 @@ export default function Designer() {
           {
             editorState.selectedElementData && editorState.selectedElementData.type === "radio" && (
               <RadioInputConfig updateData={upadteSurveyJson} />
+            )
+          }
+          {
+            editorState.selectedElementData && editorState.selectedElementData.type === "ranksurvey" && (
+              <RankSurveyConfig updateData={upadteSurveyJson} />
             )
           }
         </div>

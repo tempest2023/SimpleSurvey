@@ -9,6 +9,7 @@ import { TextInputView } from "../customSurveyComponents/TextInput";
 import { RankView } from "../customSurveyComponents/Rank";
 import { RadioInputView } from "../customSurveyComponents/RadioInput";
 import { CheckboxView } from "../customSurveyComponents/Checkbox";
+import { RankSurveyView } from "../customSurveyComponents/RankSurvey";
 import { SurveyJson, ComponentData, Page, SurveyComponentData } from "../type";
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
@@ -33,7 +34,7 @@ export default function Preview({ pageInd }: PreviewProps) {
 
   const upadteSurveyJson = (
     componentId: string,
-    data: SurveyComponentData,
+    data: SurveyComponentData | Page,
     isPage?: boolean
   ) => {
     let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
@@ -90,14 +91,22 @@ export default function Preview({ pageInd }: PreviewProps) {
     switch (data.type) {
       case "text":
         return <TextInputView key={data.id} data={data} updateData={upadteSurveyJson} />;
+        break;
       case "radio":
         return <RadioInputView key={data.id} data={data} updateData={upadteSurveyJson}  />;
+        break;
+      case "ranksurvey":
+        return <RankSurveyView key={data.id} data={data} updateData={upadteSurveyJson} toNextPage={toNextPage} />;
+        break;
       case "sortcard":
         return <SortingView key={data.id} data={data} updateData={upadteSurveyJson} toNextPage={toNextPage} />;
+        break;
       case "rank":
         return <RankView key={data.id} data={data} updateData={upadteSurveyJson}  toNextPage={toNextPage} />;
+        break;
       case "checkbox":
         return <CheckboxView key={data.id} data={data} updateData={upadteSurveyJson} />;
+        break;
       default:
         return null;
     }
