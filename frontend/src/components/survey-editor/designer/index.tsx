@@ -212,7 +212,7 @@ export default function Designer() {
   // coverly update the surveyJson data to store
   const upadteSurveyJson = (
     componentId: string,
-    data: SurveyComponentData,
+    data: SurveyComponentData | Page,
     isPage?: boolean
   ) => {
     let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
