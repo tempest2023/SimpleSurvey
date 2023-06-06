@@ -92,7 +92,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
     }
     let card = sorting[binId][index];
     sorting[binId].splice(index, 1);
-    const tmpCardList = [...cardList, card];
+    const tmpCardList = [card, ...cardList];
     setCardList(tmpCardList);
     setSorting({ ...sorting });
   };
