@@ -33,6 +33,19 @@
 .menu-item-button:focus {
   background-color: #ccc;
 }
+.add-page-button {
+  position: absolute;
+  bottom: 0.5rem;
+  width: auto;
+  height: auto;
+  border: 1px solid #ccc!important;
+}
+.add-page-button:hover {
+  background-color: lightblue;
+}
+.add-page-button:focus {
+  background-color: lightblue;
+}
 /* middle content, hold 1/2 of page */
 .preview-panel {
   display: flex;

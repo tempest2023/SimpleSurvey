@@ -154,6 +154,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
               <div className="sorting-bin-box">
                 {binSorting.map((card) => (
                   <span
+                    className="sorting-card-item-container"
                     key={card.id}
                   >
                     <span className="sorting-card-item-title">{card.title}</span>

@@ -1,12 +1,29 @@
 import type React from "react";
 import { useEffect, useState, useCallback } from "react";
-import { Layout, List, Button, notification, Divider } from "antd";
+import {
+  Dropdown,
+  Layout,
+  List,
+  Button,
+  notification,
+  Divider,
+  Popconfirm,
+} from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
-import editorSlice, { setSelectedElementId, setSelectedElementData, setSelectedPageId, setEditorState } from "../../../store/editorSlice";
-import { updateSurveyById } from '../../../requests';
-import { PlusCircleOutlined, BookOutlined } from "@ant-design/icons";
+import editorSlice, {
+  setSelectedElementId,
+  setSelectedElementData,
+  setSelectedPageId,
+  setEditorState,
+} from "../../../store/editorSlice";
+import { updateSurveyById } from "../../../requests";
+import {
+  PlusCircleOutlined,
+  BookOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { surveyComponentData } from "./surveyComponentData";
 import { TextInputConfig } from "../customSurveyComponents/TextInput";
 import { SortingConfig } from "../customSurveyComponents/Sorting";
@@ -16,11 +33,7 @@ import { RadioInputConfig } from "../customSurveyComponents/RadioInput";
 import { RankSurveyConfig } from "../customSurveyComponents/RankSurvey";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
-import {
-  SurveyJson,
-  SurveyComponentData,
-  Page,
-} from "../type";
+import { SurveyJson, SurveyComponentData, Page } from "../type";
 import { createSurveyJson, querySelectedData, queryPageById } from "../utils";
 import "./index.css";
 
@@ -46,7 +59,9 @@ export default function Designer() {
     dispatch(setSelectedElementData(elementData));
   };
   // update partial editor state to store
-  const updatePartialEditorState = (editorState: Partial<RootState["editor"]>) => {
+  const updatePartialEditorState = (
+    editorState: Partial<RootState["editor"]>
+  ) => {
     dispatch(setEditorState(editorState));
   };
   // update selected element data for config forms to load
@@ -83,48 +98,59 @@ export default function Designer() {
   useEffect(() => {
     // set a timer for auto save
     const autoSaveHandler = async () => {
-      const surveyJson = JSON.parse(localStorage.getItem('surveyJson')|| '{}');
+      const surveyJson = JSON.parse(localStorage.getItem("surveyJson") || "{}");
       // console.log(`[debug] auto save: ${surveyJson._surveyId}, ${surveyJson.surveyName}`);
-      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
-      if(!res) {
-        console.log('[error] [designer/index.tsx] auto save failed', res);
+      const res = await updateSurveyById(
+        surveyJson._surveyId,
+        surveyJson.surveyName,
+        surveyJson
+      );
+      if (!res) {
+        console.log("[error] [designer/index.tsx] auto save failed", res);
         notification.error({
-          message: 'Auto save failed',
-          description: 'Please check your network and try again.',
+          message: "Auto save failed",
+          description: "Please check your network and try again.",
           duration: 3,
         });
       }
-    }
+    };
     if (!autoSaveTimer) {
       // trigger auto save every 1 minute
-      const timer = setInterval(autoSaveHandler, 60*1000);
+      const timer = setInterval(autoSaveHandler, 60 * 1000);
       setAutoSaveTimer(timer);
     }
     return () => {
       if (autoSaveTimer) {
         clearInterval(autoSaveTimer);
       }
-    }
-  }, [])
+    };
+  }, []);
 
-  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
-    if (event.metaKey && event.key === 's') {
-      event.preventDefault();
-      const res = await updateSurveyById(surveyJson._surveyId, surveyJson.surveyName, surveyJson);
-      if(res && res.surveyId) {
-        notification.success({
-          message: 'Auto save success',
-          description: 'Survey has been saved.',
-          duration: 3,
-        });
+  const handleKeyDown = useCallback(
+    async (event: KeyboardEvent) => {
+      if (event.metaKey && event.key === "s") {
+        event.preventDefault();
+        const res = await updateSurveyById(
+          surveyJson._surveyId,
+          surveyJson.surveyName,
+          surveyJson
+        );
+        if (res && res.surveyId) {
+          notification.success({
+            message: "Auto save success",
+            description: "Survey has been saved.",
+            duration: 3,
+          });
+        }
       }
-    }
-  }, [updateSurveyById]);
+    },
+    [updateSurveyById]
+  );
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 
@@ -183,13 +209,56 @@ export default function Designer() {
     });
   };
 
+  // add a new page to surveyJson
+  const addPage = (type: string) => {
+    let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
+    if (type === "complete") {
+      // add a complete page
+      const completePage = {
+        id: nanoid(),
+        title: "Info",
+        description: "You have finished the survey!",
+        elements: [],
+      };
+      tmpSurveyJson.pages.push(completePage);
+    } else {
+      // add a new page
+      const newPage = {
+        id: nanoid(),
+        title: "New Page",
+        description: "This is a new Page",
+        elements: [
+          {
+            id: nanoid(),
+            type: type,
+            name: type,
+          },
+        ],
+      };
+      tmpSurveyJson.pages.push(newPage);
+    }
+    // update state
+    handleSetSurveyJson(tmpSurveyJson);
+  };
+
+  // delete a page from surveyJson
+  const deletePage = (pageId: string) => {
+    let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
+    // delete page
+    tmpSurveyJson.pages = tmpSurveyJson.pages.filter(
+      (page: Page) => page.id !== pageId
+    );
+    // update state
+    handleSetSurveyJson(tmpSurveyJson);
+  };
+
   // when select a page from left panel, update the selectedPage and selectedElementId
   const onSelectPage = (pageid: string) => {
     if (!pageid) {
       return;
     }
     const page = queryPageById(surveyJson, pageid);
-    if(!page) {
+    if (!page) {
       return;
     }
     // if there is no element in this page, set selectedElementId to null
@@ -217,22 +286,28 @@ export default function Designer() {
   ) => {
     let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
     // console.log(`[debug] update surveyJson: ${componentId}, ${data}, ${isPage}, ${tmpSurveyJson}`);
-    if (!tmpSurveyJson || !tmpSurveyJson.pages || !Array.isArray(tmpSurveyJson.pages)) {
-      console.log("[error] [designer/index.tsx] surveyJson is not valid")
+    if (
+      !tmpSurveyJson ||
+      !tmpSurveyJson.pages ||
+      !Array.isArray(tmpSurveyJson.pages)
+    ) {
+      console.log("[error] [designer/index.tsx] surveyJson is not valid");
       return;
     }
-    if(isPage) {
+    if (isPage) {
       // find the target page and update the data
       let findTargetPage = false;
-      for(let i = 0; i < tmpSurveyJson.pages.length; i++) {
-        if(tmpSurveyJson.pages[i].id === componentId) {
-          tmpSurveyJson.pages[i] = {...tmpSurveyJson.pages[i], ...data};
+      for (let i = 0; i < tmpSurveyJson.pages.length; i++) {
+        if (tmpSurveyJson.pages[i].id === componentId) {
+          tmpSurveyJson.pages[i] = { ...tmpSurveyJson.pages[i], ...data };
           findTargetPage = true;
           break;
         }
       }
-      if(!findTargetPage) {
-        console.log("[error] [designer/index.tsx] cannot find target page in surveyJson");
+      if (!findTargetPage) {
+        console.log(
+          "[error] [designer/index.tsx] cannot find target page in surveyJson"
+        );
       }
       handleSetSurveyJson(tmpSurveyJson);
       return;
@@ -248,7 +323,7 @@ export default function Designer() {
       }
       for (let i = 0; i < page.elements.length; i++) {
         if (page.elements[i].id === componentId) {
-          page.elements[i] = {...page.elements[i], ...data};
+          page.elements[i] = { ...page.elements[i], ...data };
           findTargetElement = true;
           break;
         }
@@ -277,20 +352,99 @@ export default function Designer() {
           }
           dataSource={surveyJson?.pages || []}
           renderItem={(item: Page) => (
-            <List.Item style={{ padding: 0 }} className={editorState.selectedPageId === item.id ? "active-menu" : ""}>
+            <List.Item
+              style={{ padding: 0 }}
+              className={
+                editorState.selectedPageId === item.id ? "active-menu" : ""
+              }
+            >
               <Button
-                onClick={()=>onSelectPage(item.id)}
+                onClick={() => onSelectPage(item.id)}
                 className="menu-item-button"
                 type="ghost"
                 block
                 size="large"
                 icon={<BookOutlined />}
               >
-                {item.title || 'Untitled Page'}
+                {item.title || "Untitled Page"}
               </Button>
+              {/* Add a delete button to delete this page */}
+              <Popconfirm
+                title="Are you sure to delete this page? This will delete all configs in this page."
+                onConfirm={() => deletePage(item.id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="default"
+                  shape="circle"
+                  size="small"
+                  icon={<DeleteOutlined />}
+                ></Button>
+              </Popconfirm>
             </List.Item>
           )}
         />
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "1",
+                label: (
+                  <Button
+                    type="ghost"
+                    block
+                    onClick={() => addPage("sortcard")}
+                  >
+                    Sorting Page
+                  </Button>
+                ),
+              },
+              {
+                key: "2",
+                label: (
+                  <Button type="ghost" block onClick={() => addPage("rank")}>
+                    Ranking Page
+                  </Button>
+                ),
+              },
+              {
+                key: "3",
+                label: (
+                  <Button
+                    type="ghost"
+                    block
+                    onClick={() => addPage("ranksurvey")}
+                  >
+                    Ranking Radio Question Page
+                  </Button>
+                ),
+              },
+              {
+                key: "4",
+                label: (
+                  <Button
+                    type="ghost"
+                    block
+                    onClick={() => addPage("complete")}
+                  >
+                    Complete Page
+                  </Button>
+                ),
+              },
+            ],
+          }}
+          placement="bottom"
+        >
+          <Button
+            className="menu-item-button add-page-button"
+            type="default"
+            icon={<PlusCircleOutlined />}
+          >
+            Add Page
+          </Button>
+        </Dropdown>
+
         {/* <List
           itemLayout="horizontal"
           header={<div><h2>Components</h2></div>}
@@ -314,25 +468,26 @@ export default function Designer() {
             <PageComponentConfig updateData={upadteSurveyJson} />
           )}
           <Divider />
-          {editorState.selectedElementData && editorState.selectedElementData.type === "text" && (
-            <TextInputConfig updateData={upadteSurveyJson} />
-          )}
-          {editorState.selectedElementData && editorState.selectedElementData.type === "sortcard" && (
-            <SortingConfig updateData={upadteSurveyJson} />
-          )}
-          {editorState.selectedElementData && editorState.selectedElementData.type === "rank" && (
-            <RankConfig updateData={upadteSurveyJson} />
-          )}
-          {
-            editorState.selectedElementData && editorState.selectedElementData.type === "radio" && (
+          {editorState.selectedElementData &&
+            editorState.selectedElementData.type === "text" && (
+              <TextInputConfig updateData={upadteSurveyJson} />
+            )}
+          {editorState.selectedElementData &&
+            editorState.selectedElementData.type === "sortcard" && (
+              <SortingConfig updateData={upadteSurveyJson} />
+            )}
+          {editorState.selectedElementData &&
+            editorState.selectedElementData.type === "rank" && (
+              <RankConfig updateData={upadteSurveyJson} />
+            )}
+          {editorState.selectedElementData &&
+            editorState.selectedElementData.type === "radio" && (
               <RadioInputConfig updateData={upadteSurveyJson} />
-            )
-          }
-          {
-            editorState.selectedElementData && editorState.selectedElementData.type === "ranksurvey" && (
+            )}
+          {editorState.selectedElementData &&
+            editorState.selectedElementData.type === "ranksurvey" && (
               <RankSurveyConfig updateData={upadteSurveyJson} />
-            )
-          }
+            )}
         </div>
       </div>
     </Layout>

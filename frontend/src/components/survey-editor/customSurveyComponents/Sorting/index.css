@@ -89,6 +89,16 @@
   border-top-left-radius: 0;
   /* set border top right radius as 0 */
   border-top-right-radius: 0;
+  padding: 0.25rem;
+}
+.sorting-card-item-container {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 250px;
+  /* border: 1px solid lightblue; */
+  margin: 0.25rem;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .sorting-bin-outter {
