@@ -3,7 +3,7 @@ import { SortingCardBinData } from './customSurveyComponents/Sorting/type';
 import { RankData } from './customSurveyComponents/Rank/type';
 // type of components config props
 
-export type updateDataFn = (componentId: string, data: SurveyComponentData, isPage?: boolean) => void;
+export type updateDataFn = (componentId: string, data: SurveyComponentData|Page, isPage?: boolean) => void;
 export interface SurveyCustomComponentProps {
   data?: SurveyComponentData;
   updateData: updateDataFn;
@@ -28,8 +28,11 @@ interface CheckboxData extends SurveyComponentData {
   options: string[];
 }
 
+interface RankSurveyData extends SurveyComponentData {
+  type: 'ranksurvey';
+}
 
-export type ComponentData = TextInputData | RadioInputData | SortingCardBinData | CheckboxData | RankData;
+export type ComponentData = TextInputData | RadioInputData | SortingCardBinData | CheckboxData | RankData | RankSurveyData;
 
 export interface Page {
   id: string;

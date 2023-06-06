@@ -156,7 +156,7 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
                   <span
                     key={card.id}
                   >
-                    <span className="sorting-card-item-title">{ellipseString(card.title, 5)}</span>
+                    <span className="sorting-card-item-title">{card.title}</span>
                     <Popover content='Remove'><Button type="ghost" icon={<DeleteOutlined />} onClick={() => handleRestoreClick(card.id, bin.id)}></Button></Popover>
                   </span>
                 ))}
@@ -178,10 +178,8 @@ export const SortingView = ({ data, updateData, toNextPage }: SurveyCustomCompon
         if(element.id === data.id) {
           // set the sorting data for the next page rank element
           const targetPage = surveyJson.pages[i+1];
-          console.log('debug', targetPage)
           if(targetPage) {
             const targetElement = targetPage.elements?.find((element) => element.type === 'rank');
-            console.log('debug', targetElement);
             if(targetElement) {
               updateData(targetElement.id, {...targetElement.data, sorting}, false)
             }
@@ -354,14 +352,14 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     });
   };
 
-  const onFinishCard = (values: any) => {
+  const onFinishAddard = (values: any) => {
     const card: SortingCard = {
       ...values,
       id: `${Date.now()}`,
       isAvailable: true,
       rank: cardList.length,
     };
-    // console.log('[debug] onFinishCard card:', card);
+    // console.log('[debug] onFinishAddard card:', card);
     onAddCard(card);
     cardForm.resetFields();
   };
@@ -436,7 +434,7 @@ export const SortingConfig = ({ updateData }: SortingConfigProps) => {
     <Form
       form={cardForm}
       title="Add Cards"
-      onFinish={onFinishCard}
+      onFinish={onFinishAddard}
       layout="horizontal"
     >
       <Form.Item name="title" label="Title" rules={[{ required: true }]}>

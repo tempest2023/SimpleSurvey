@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useState, useCallback } from "react";
-import { Layout, List, Button, notification } from "antd";
+import { Layout, List, Button, notification, Divider } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { setSurveyJson } from "../../../store/surveySlice";
@@ -12,6 +12,8 @@ import { TextInputConfig } from "../customSurveyComponents/TextInput";
 import { SortingConfig } from "../customSurveyComponents/Sorting";
 import { PageComponentConfig } from "../customSurveyComponents/Page";
 import { RankConfig } from "../customSurveyComponents/Rank";
+import { RadioInputConfig } from "../customSurveyComponents/RadioInput";
+import { RankSurveyConfig } from "../customSurveyComponents/RankSurvey";
 import Preview from "../preview";
 import { nanoid } from "nanoid";
 import {
@@ -210,7 +212,7 @@ export default function Designer() {
   // coverly update the surveyJson data to store
   const upadteSurveyJson = (
     componentId: string,
-    data: SurveyComponentData,
+    data: SurveyComponentData | Page,
     isPage?: boolean
   ) => {
     let tmpSurveyJson = JSON.parse(JSON.stringify(surveyJson));
@@ -263,9 +265,6 @@ export default function Designer() {
     localStorage.setItem("surveyJson", JSON.stringify(tmpSurveyJson));
   };
 
-  // console.log('[debug] [designer/index.tsx] surveyJson:', surveyJson)
-  // console.log('[debug] [designer/index.tsx] editorState:', editorState)
-
   return (
     <Layout className="designer">
       <div className="menu-panel">
@@ -277,7 +276,7 @@ export default function Designer() {
             </div>
           }
           dataSource={surveyJson?.pages || []}
-          renderItem={(item) => (
+          renderItem={(item: Page) => (
             <List.Item style={{ padding: 0 }} className={editorState.selectedPageId === item.id ? "active-menu" : ""}>
               <Button
                 onClick={()=>onSelectPage(item.id)}
@@ -314,6 +313,7 @@ export default function Designer() {
           {editorState.selectedPageId && (
             <PageComponentConfig updateData={upadteSurveyJson} />
           )}
+          <Divider />
           {editorState.selectedElementData && editorState.selectedElementData.type === "text" && (
             <TextInputConfig updateData={upadteSurveyJson} />
           )}
@@ -323,6 +323,16 @@ export default function Designer() {
           {editorState.selectedElementData && editorState.selectedElementData.type === "rank" && (
             <RankConfig updateData={upadteSurveyJson} />
           )}
+          {
+            editorState.selectedElementData && editorState.selectedElementData.type === "radio" && (
+              <RadioInputConfig updateData={upadteSurveyJson} />
+            )
+          }
+          {
+            editorState.selectedElementData && editorState.selectedElementData.type === "ranksurvey" && (
+              <RankSurveyConfig updateData={upadteSurveyJson} />
+            )
+          }
         </div>
       </div>
     </Layout>

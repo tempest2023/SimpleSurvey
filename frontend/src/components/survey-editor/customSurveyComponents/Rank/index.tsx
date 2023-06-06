@@ -22,6 +22,7 @@ export const RankView = ({ data, updateData, toNextPage }: SurveyCustomComponent
   if (!data) {
     return <div>No data in Rank Component</div>;
   }
+  const surveyJson = useSelector((state: RootState) => state.survey.surveyJson);
   const [sorting, setSorting] = useState(JSON.parse(JSON.stringify(data.sorting|| {})));
   const limit = data.limit || 10;
   const [binList, setBinList] = useState<SortingBinSelected[]>(data.binList || []);  
@@ -86,6 +87,10 @@ export const RankView = ({ data, updateData, toNextPage }: SurveyCustomComponent
 
   const checkAllRanked = () => {
     let allRanked = true;
+    // new demand: only there is a card in rankList, the user can submit
+    if(rankList.length > 0) {
+      return true;
+    }
     // if the rankList is full
     if(rankList.length === limit) {
       return true;
@@ -105,6 +110,24 @@ export const RankView = ({ data, updateData, toNextPage }: SurveyCustomComponent
   const onFinish = () => {
     // save changes in this page and go to next page
     updateData(data.id, { ...data, sorting, rankList }, false);
+    // 
+    for(let i=0;i<surveyJson.pages.length;i++) {
+      const page = surveyJson.pages[i];
+      page.elements?.forEach((element) => {
+        if(element.id === data.id) {
+          // set the rank data for the next page ranksurvey element
+          const targetPage = surveyJson.pages[i+1];
+          if(targetPage) {
+            const updatePageDescription = `Instructions: You have identified ${rankList.length} tasks as priorities. For each task, please answer the following questions based on how you most commonly complete it.\n The technology used to complete a task includes both specialized equipment created for persons with disabilities and mainstream technology used as assistive technology. For instance, a person who has trouble remembering what items to buy and cannot write a list on paper could use voice to text to create a list using their smartphone. When shopping, they can easily use their smartphone to review the items they need to purchase. This would be an example of mainstream technology - smartphone used as assistive technology.`;
+            const targetElement = targetPage.elements?.find((element) => element.type === 'ranksurvey');
+            if(targetElement) {
+              updateData(targetElement.id, {...targetElement.data, rankList}, false)
+            }
+            // updateData(targetPage.id, {...targetPage, description: updatePageDescription}, true);
+          }
+        }
+      })
+    }
     toNextPage && toNextPage();
   }
 
