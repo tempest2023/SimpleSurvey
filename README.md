@@ -52,6 +52,17 @@ jwt malformed: before request, you should have a jwt, which means you should cre
 5. Use any deployment tool to deploy this node.js backend service. Such as `pm2 start`
 
 
+## Deployment Instruction on our AWS EC2 Instance
+
+1. ssh login, your ssh key may not be eligible, update the permission of the SimpleSurvey instance on AWS portal.
+2. `sudo -i`, checkout root user
+3. `cd ~/SimpleSurvey`, in root directory, there is `SimpleSurvey` directory which is the source code of our project
+4. `git pull`: pull the latest code
+5. `yarn build:frontend && yarn build`: build frontend code and backend code
+6. [Optional] `yarn dev`: run development application for testing everything is ok.
+7. `pm2 start`: use `pm2` to launch a server.
+8. [Optional] `pm2 list`/`pm2 log`: use `pm2` list and log to check if your serve works well.
+
 ## Concepts
 * REST API principals
     * CRUD
