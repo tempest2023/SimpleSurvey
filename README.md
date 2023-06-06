@@ -4,6 +4,38 @@ A simple survey system which enables users to deploy their own survey system inc
 
 Note 2: Make sure you add .env to your .gitignore before pushing any changes to your repository. You will also want to generate new public & private keys
 
+## Get Started
+
+### Database setup
+
+Config `dbUri` in `/config/default.ts` as a valid MongoDB url.
+
+Add env vars to `.env` (create one if doesn't exist) like below: 
+```
+ACCESS_TOKEN_PUBLIC_KEY="xxx"
+ACCESS_TOKEN_PRIVATE_KEY="xxx"
+REFRESH_PUBLIC_KEY="xxx"
+REFRESH_PRIVATE_KEY="xxx"
+```
+
+Launch your MongoDB service which can be connected by your valid MongoDB url.
+
+### Backend
+
+1. Add deps for backend: `yarn`
+
+2. Start: `yarn dev`
+
+### Frontend
+> Open another terminal
+
+> enter into the directory for frontend
+`cd frontend`
+
+1. Install deps for frontend: `yarn`
+2. Update `API_URL` in `frontend/src/constants.tsx` to `http://localhost:8080` for seperately dev/test. It won't set for deployment because in deployment env, we use integrated deployment.
+3. Start: `yarn dev`
+
 #### Generate new keys: https://travistidwell.com/jsencrypt/demo/
 
 #### Base64 encode the keys: https://www.base64encode.org/
@@ -11,6 +43,14 @@ Note 2: Make sure you add .env to your .gitignore before pushing any changes to 
 
 ## Common issues
 jwt malformed: before request, you should have a jwt, which means you should create session.
+
+## Deployment on Server
+1. Change `API_URL` in `frontend/src/constants.tsx` to '', no cors origin request in deployment
+2. `cd frontend && yarn build`
+3. `yarn dev` at root directory to test the backend services, if everything is good, the website will be deployed at `localhost:8080`
+4. `yarn build` to build backend codes to javascript codes for deployment.
+5. Use any deployment tool to deploy this node.js backend service. Such as `pm2 start`
+
 
 ## Concepts
 * REST API principals
@@ -32,8 +72,6 @@ jwt malformed: before request, you should have a jwt, which means you should cre
 ## Survey Simsple Overview
 ![](./diagrams/simpleSurvey.drawio.png)
 
-
-# Deployment
 
 ## What will we use
 * Docker (image)

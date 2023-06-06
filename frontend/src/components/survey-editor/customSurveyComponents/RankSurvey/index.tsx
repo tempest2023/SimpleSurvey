@@ -280,7 +280,11 @@ export const RankSurveyView = ({
     console.log('[debug] values: ', radioFormValues);
     // set all choice of radioInputItem to the value from form
     const tmpTasks = JSON.parse(JSON.stringify(tasks));
-    if(!tasks || tasks.length === 0) return;
+    if(!tasks || tasks.length === 0){
+      // not question to answer, go to next page
+      toNextPage && toNextPage();
+      return;
+    };
     for(let i = 0; i < tasks.length; i++) {
       const taskInd = i + 1;
       for(let j = 0; j < (tasks[i].radioInputList as any[]).length; j++) {
@@ -291,7 +295,7 @@ export const RankSurveyView = ({
     setTasks(tmpTasks);
     // save changes in this page and go to next page
     updateData(data.id, { ...data, radioTaskList: tmpTasks }, false);
-    // toNextPage && toNextPage();
+    toNextPage && toNextPage();
   };
   // get card data and rank data from page1 and page2, init the raido questions by these data
   useEffect(() => {
